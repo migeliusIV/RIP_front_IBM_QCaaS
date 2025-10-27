@@ -5,23 +5,13 @@ html {
     padding: 0;
     width: 100%;
     height: 100%;
+    background-color: #F4F4F4;
     overflow-x: hidden; /* предотвращает горизонтальный скролл */
-}
-/*-----------Header-----------*/
-header {
-    background: rgb(255, 255, 255);
-    height: 70px;
-}
-header img { /*задаем размер картинки*/
-    width: 80px;
-    height: 50px;
-    cursor: pointer;
-    margin: 10px;
 }
 /*===========Gates=list============*/
 .gates-body {
     width: 100vw;    /* 100% ширины окна */
-    min-height: 90vh; /* 100% высоты окна */
+    min-height: 100vh; /* 100% высоты окна */
     margin: 0;
     padding: 0;
     box-sizing: border-box;

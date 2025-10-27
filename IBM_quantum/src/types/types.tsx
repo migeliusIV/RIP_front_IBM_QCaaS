@@ -2,8 +2,14 @@ export interface IGate {
   ID_gate: number;
   Title: string;
   Description: string;
-  FullInfo: string;
+  Status: boolean;
   Image: string | null;
+  I0j0: 		number;
+	I0j1:		number;
+	I1j0: 		number;
+	I1j1: 		number;
+	Matrix_koeff: string;
+  FullInfo: string;
   TheAxis: string;
 }
 

@@ -13,8 +13,10 @@ const checkBackendAvailability = async (): Promise<boolean> => {
     if (isBackendAvailable !== null) return isBackendAvailable;
     
     try {
-        const response = await fetch('/api/health', {
-            method: 'HEAD',
+        // Используем GET вместо HEAD (более надёжно)
+        const response = await fetch('/health', {
+            method: 'GET',
+            // Убираем таймаут из fetch, используем общий
             signal: AbortSignal.timeout(3000)
         });
         isBackendAvailable = response.ok;
@@ -42,11 +44,6 @@ const fetchWithTimeout = async (url: string, options: RequestInit = {}, timeout 
         clearTimeout(timeoutId);
         throw error;
     }
-};
-
-const handleApiError = (error: unknown, context: string): never => {
-    console.error(`Ошибка в ${context}:`, error);
-    throw error instanceof Error ? error : new Error(`Ошибка в ${context}`);
 };
 
 // Основные API функции

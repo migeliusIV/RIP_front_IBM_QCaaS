@@ -155,22 +155,13 @@ export const IBMGatesList = () => {
         ) : (
           <Row className="gates-templ">
             <Col xs={12} lg={10}>
-              <Row xs={1} md={2} lg={2} xxl={2} className="g-4">
-                {gates.length > 0 ? (
-                  gates.map(gate => (
-                    <Col key={gate.ID_gate}>
-                      <GateCard
-                        gate={gate}
-                        onAddToTask={() => handleAddToTask(gate.ID_gate)}
-                      />
-                    </Col>
-                  ))
-                ) : (
-                  <Col>
-                    <Alert variant="info">Гейты не найдены</Alert>
-                  </Col>
-                )}
-              </Row>
+                <Row xs={1} md={2} lg={2} xxl={2} className="g-4">
+                    {gates.map(gate => (
+                        <Col key={gate.ID_gate}>  {/* ← ОБЯЗАТЕЛЬНО! */}
+                        <GateCard gate={gate} />
+                        </Col>
+                    ))}
+                </Row>
             </Col>
           </Row>
         )}

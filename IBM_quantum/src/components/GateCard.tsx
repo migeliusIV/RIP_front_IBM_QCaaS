@@ -5,10 +5,9 @@ import './styles/GateCard.css';
 
 interface GateCardProps {
   gate: IGate;
-  onAddToTask: () => void;
 }
 
-export const GateCard = ({ gate, onAddToTask }: GateCardProps) => {
+export const GateCard = ({ gate }: GateCardProps) => {
   return (
     <Card className="gates-card h-100">
       <div className="gates-crd-cnt">
