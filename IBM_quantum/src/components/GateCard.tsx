@@ -32,7 +32,7 @@ export const GateCard = ({ gate, onAddToTask }: GateCardProps) => {
         </div>
         <div className="gates-crd-img">
           <img
-            src={gate.Image || 'http://127.0.0.1:9000/ibm-pictures/img/default-gate.png'}
+            src={gate.Image || 'http://127.0.0.1:9000/ibm-pictures/img/imageError.gif'}
             alt={gate.Title}
             className="img-fluid"
           />

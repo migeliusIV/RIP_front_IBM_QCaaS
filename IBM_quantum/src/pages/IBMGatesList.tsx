@@ -26,7 +26,7 @@ export const IBMGatesList = () => {
   const [error, setError] = useState<string | null>(null);
 
   // Используем mock-данные, если бэкенд недоступен
-  const USE_MOCK = true; // ← измените на true для mock-режима
+  const USE_MOCK = false; // ← измените на true для mock-режима
 
   const fetchGates = async (filterTitle: string = '') => {
     setLoading(true);
@@ -120,8 +120,8 @@ export const IBMGatesList = () => {
                         <Image
                             src="http://127.0.0.1:9000/ibm-pictures/img/basket.png"
                             alt="Корзина"
-                            width={40}
-                            height={40}
+                            width={60}
+                            height={60}
                         />
                         </a>
                     ) : (
@@ -129,8 +129,8 @@ export const IBMGatesList = () => {
                         <Image
                             src="http://127.0.0.1:9000/ibm-pictures/img/basket.png"
                             alt="Корзина"
-                            width={40}
-                            height={40}
+                            width={60}
+                            height={60}
                             style={{ opacity: 0.5 }}
                         />
                         </span>

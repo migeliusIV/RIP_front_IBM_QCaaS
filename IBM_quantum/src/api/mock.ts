@@ -6,24 +6,24 @@ export const MOCK_GATES: IGate[] = [
     ID_gate: 1,
     Title: "Identity Gate",
     Description: "Не изменяет состояния кубита.",
-    FullInfo: "Проверка",
-    Image: "../../public/imageError.gif",
+    FullInfo: "Ничего не делает с состоянием кубита. Оставляет его без изменений.",
+    Image: "http://127.0.0.1:9000/ibm-pictures/img/I-gate.png",
     TheAxis: "non"
   },
   {
     ID_gate: 2,
     Title: "Pauli-X Gate (NOT gate)",
     Description: "Инвертирует состояние кубита.",
-    FullInfo: "Проверка",
-    Image:  "../../public/imageError.gif",
+    FullInfo: "Аналог классического NOT-гейта. Переворачивает состояние кубита.",
+    Image:  "http://127.0.0.1:9000/ibm-pictures/img/X-gate.png",
     TheAxis: "non"
   },
   {
     ID_gate: 3,
     Title: "X-axis Rotation Gate",
     Description: "Вращает кубит вокруг оси X на угол тэта.",
-    FullInfo: "Проверка",
-    Image: "../../public/imageError.gif",
+    FullInfo: "Эта операция вращает состояние кубита на сфере Блоха вокруг оси X. Значение угла поворота можно задать при компановке выражения (в деталях калькуляции).",
+    Image: "http://127.0.0.1:9000/ibm-pictures/img/X-rot-gate.png",
     TheAxis: "X"
   }
 ];

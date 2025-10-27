@@ -1,5 +1,5 @@
 // src/api/gatesApi.ts
-import type { IGate, DraftTaskInfo } from '../types/types';
+import type { IGate } from '../types/types';
 import {  
     getMockGateById, 
     getMockGates 
