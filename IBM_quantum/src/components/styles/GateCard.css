@@ -1,0 +1,164 @@
+/*-------------Cards--------------*/
+.gates-card {
+    background-color: #ffffff;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    width: 530px;
+    height: 220px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* текст сверху, кнопка снизу */
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.gates-crd-cnt{
+    display: flex;
+    gap: 15px;
+    margin-bottom: 15px;
+    flex: 1;
+}
+
+.gates-crd-ttl {
+    font-family: 'Poppins', sans-serif;
+    font-size: 20px;
+    font-weight: 600;
+    margin: 0;
+    color: #000;
+    word-wrap: break-word; /* Перенос длинных слов */
+}
+
+.gates-crd-dscr {
+    font-weight: 100;
+    word-wrap: break-word; /* Перенос длинных слов */
+    overflow-wrap: break-word; /* Альтернативное свойство для переноса */
+    hyphens: auto; /* Автоматическое добавление переносов (поддерживается не всеми браузерами) */
+}
+
+.gates-crd-txt {
+    flex: 1;
+    min-width: 0; /* Важно для правильного переноса текста */
+    width: 300px;
+}
+
+.gates-crd-img {
+    flex-shrink: 0;
+    display: flex;
+    align-items: flex-start;
+    justify-content: right;
+}
+
+.gates-crd-img img {
+    width: 180px;
+    height: 120px;
+    object-fit: cover;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+/*--------atributes--------*/
+.attribute-not-editable{
+    margin: 0 auto 10px 0;
+    font-size: 9px !important;
+    text-align: center !important;
+    color: #171717 !important;
+    background-color: #E0E0E0 !important;
+    width: 140px !important;
+    height: 20px !important;
+    border-radius: 10px;
+
+    padding-top: 5px;
+}
+
+.attributes{
+    display: flex;  
+    font-family: IBM Plex Mono !important;
+    text-align: center !important;
+    margin: 0 auto 10px 0 !important;
+    width: 200px !important;
+}
+
+.attribute-editable{
+    flex: 1;
+    font-size: 9px !important;
+    color: #0D4DD4 !important;
+    background-color: #D0E2FF !important;
+    width: 140px !important;
+    height: 20px !important;
+    border-radius: 10px;
+    padding-bottom: 5px ;
+}
+.attribute-axis{
+    flex: 1;
+    font-size: 9px !important;
+    text-align: center !important;
+    color: #8448D7 !important;
+    background-color: #EADEFF !important;
+    width: 140px !important;
+    height: 20px !important;
+    border-radius: 10px;
+    
+    padding-bottom: 5px;
+}
+/*--------buttons----------*/
+.card-button-add {
+    font-family: 'Poppins', sans-serif;
+    font-size: 16px;
+    color: #fff;
+    font-weight: 500;
+    background-color:rgba(52, 58, 63, 1);
+    padding: 15px 10px;
+    width: 199.83px;
+    border-radius: 0px;
+    text-align: center;
+    display: inline-block;
+    width: fit-content;
+    margin-bottom: 10px;
+    text-decoration: none;
+    /* Плавные переходы */
+    transition: all 0.3s ease;
+    /* Дополнительные стили для лучшего вида */
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.card-button-more {
+    font-family: 'Poppins', sans-serif;
+    font-size: 16px;
+    color: #a0a0a0;
+    font-weight: 500;
+    background-color:rgb(255, 255, 255);
+    padding: 12px 24px;
+    width: 199.83px;
+    height: 24px;
+    border-radius: 0px;
+    text-align: center;
+    display: inline-block;
+    width: fit-content;
+    transition: all 0.3s ease;
+    font-style: normal;
+}
+/*-------------Effects--------------*/
+.card-button-add:hover {
+    background-color: #000000; /* темнее красный */
+    transform: translateY(-2px); /* легкий подъем */
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2); /* тень больше */
+}
+
+/* Active-эффект при нажатии */
+.card-button-add:active {
+    transform: translateY(0); /* возврат на место */
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* тень меньше */
+}
+
+/* Фокус для accessibility */
+.card-button-add:focus {
+    outline: 2px solid #000000;
+    outline-offset: 2px;
+}
+
+.card-button-more:hover {
+    text-decoration: underline;
+    transition: all 0.3s ease;
+    color:rgb(9, 9, 9);
+}
