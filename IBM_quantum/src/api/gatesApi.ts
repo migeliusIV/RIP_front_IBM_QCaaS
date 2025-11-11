@@ -9,7 +9,7 @@ import {
 let isBackendAvailable: boolean | null = null;
 
 // Вспомогательные функции
-const checkBackendAvailability = async (): Promise<boolean> => {
+export const checkBackendAvailability = async (): Promise<boolean> => {
     if (isBackendAvailable !== null) return isBackendAvailable;
     
     try {
