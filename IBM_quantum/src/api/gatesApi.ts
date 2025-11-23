@@ -1,15 +1,16 @@
 // src/api/gatesApi.ts
-import type { IGate } from '../types/types';
+import type { IGate, DraftTaskInfo } from '../types';
 import {  
     getMockGateById, 
-    getMockGates 
+    getMockGates,
+    mockDraftTask, 
 } from './mock';
 
 // Состояние доступности бэкенда
 let isBackendAvailable: boolean | null = null;
 
 // Вспомогательные функции
-export const checkBackendAvailability = async (): Promise<boolean> => {
+const checkBackendAvailability = async (): Promise<boolean> => {
     if (isBackendAvailable !== null) return isBackendAvailable;
     
     try {
@@ -69,7 +70,7 @@ export const getGates = async (title?: string): Promise<IGate[]> => {
         return getMockGates(title);
     }
 };
-/*
+
 export const getDraftTaskInfo = async (): Promise<DraftTaskInfo> => {
     const backendAvailable = await checkBackendAvailability();
     
@@ -79,7 +80,21 @@ export const getDraftTaskInfo = async (): Promise<DraftTaskInfo> => {
     }
     
     try {
-        const res = await fetchWithTimeout('/api/tasks/draft');
+        const token = localStorage.getItem('authToken'); 
+        console.log('Все ключи в localStorage:', Object.keys(localStorage));
+        console.log('authToken:', localStorage.getItem('authToken'));
+        console.log('token:', localStorage.getItem('token'));
+        console.log('localStorage.authToken:', localStorage.getItem('authToken'));
+        console.log('sessionStorage.authToken:', sessionStorage.getItem('authToken'));
+        if (!token) {
+            throw new Error('No auth token found');
+        }
+
+        const res = await fetchWithTimeout('/api/quantum_task/current',{
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
         if (!res.ok) throw new Error('Ошибка загрузки черновика');
         return await res.json();
     } catch (error) {
@@ -88,7 +103,7 @@ export const getDraftTaskInfo = async (): Promise<DraftTaskInfo> => {
         return mockDraftTask;
     }
 };
-*/
+
 export const getGateById = async (id: string): Promise<IGate> => {
     const backendAvailable = await checkBackendAvailability();
     

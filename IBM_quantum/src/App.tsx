@@ -15,7 +15,7 @@ const MainLayout = () => (
 
 function App() {
     return (
-        <BrowserRouter>
+        <BrowserRouter basename="/RepoName">
             <Routes>
                 <Route path="/IBM" element={<HomePage />} />
                 <Route path="/gates" element={<IBMGatesList />} />

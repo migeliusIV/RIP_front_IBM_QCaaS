@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import { useSelector } from "react-redux";
-import type { IGate, DraftTaskInfo } from '../../types/types';
+import type { IGate, DraftTaskInfo } from '../../types';
 import type { RootState } from '../index';
 
 interface GatesState {

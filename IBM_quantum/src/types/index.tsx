@@ -23,3 +23,7 @@ export interface Breadcrumb {
     path?: string;
     active?: boolean;
 }
+
+export interface FilterState {
+    searchTerm: string;
+}

@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { Container, Spinner, Row, Col, Button } from 'react-bootstrap';
 import { getGateById } from '../api/gatesApi';
-import type { IGate } from '../types/types';
+import type { IGate } from '../types';
 import { CustomBreadcrumbs } from '../components/Breadcrumbs';
 import { AppNavbar } from '../components/Navbar';
 import './styles/IBMGateProp.css';

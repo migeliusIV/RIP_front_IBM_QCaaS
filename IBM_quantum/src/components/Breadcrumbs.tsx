@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { ChevronRight } from 'react-bootstrap-icons';
-import type { Breadcrumb } from '../types/types';
+import type { Breadcrumb } from '../types';
 import './styles/Breadcrumbs.css';
 
 

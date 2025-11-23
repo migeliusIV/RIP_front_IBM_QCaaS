@@ -1,7 +1,8 @@
 // src/components/GateCard.tsx
 import { Card, Button, Badge } from 'react-bootstrap';
-import type { IGate } from '../types/types';
+import type { IGate } from '../types';
 import './styles/GateCard.css';
+import { Link } from 'react-router-dom';
 
 interface GateCardProps {
   gate: IGate;
@@ -48,12 +49,11 @@ export const GateCard = ({ gate }: GateCardProps) => {
           Добавить
         </Button>
         */}
-        <a
-          href={`/gate_property/${gate.ID_gate}`}
+        <Link to={`/gate_property/${gate.ID_gate}`}
           className="card-button-more d-block text-center"
         >
           Подробнее
-        </a>
+        </Link>
       </div>
     </Card>
   );

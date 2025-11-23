@@ -1,4 +1,5 @@
-import { useEffect } from 'react';
+// src/pages/IBMGatesList.tsx
+import { useState, useEffect } from 'react';
 import {
   Container,
   Row,
@@ -12,49 +13,94 @@ import {
 } from 'react-bootstrap';
 import { AppNavbar } from '../components/Navbar';
 import { GateCard } from '../components/GateCard';
-import { useAppDispatch, useAppSelector } from '../hooks/redux';
-import { setSearchTermAction } from '../store/slices/filtersSlice';
-import { 
-  useGates, 
-  useGatesLoading, 
-  useGatesError, 
-  useDraftTask,
-  useMockMode,
-  incrementGatesCountAction
-} from '../store/slices/gatesSlice';
-import { useGatesData } from '../hooks/useGatesData';
+import { getGates, getDraftTaskInfo } from '../api/gatesApi';
+import { useSelector, useDispatch } from 'react-redux';
+import { setSearchTerm } from '../store/slices/filterSlice';
+import type { RootState } from '../store';
+import type { IGate, DraftTaskInfo } from '../types';
+import { MOCK_GATES } from '../api/mock'
 import './styles/IBMGatesList.css';
+import { store } from '../store';
+import { Link } from 'react-router-dom';
 
 export const IBMGatesList = () => {
-  const dispatch = useAppDispatch();
-  
-  // Получаем данные из Redux store
-  const gates = useGates();
-  const loading = useGatesLoading();
-  const error = useGatesError();
-  const draftTask = useDraftTask();
-  const useMock = useMockMode();
-  const searchTerm = useAppSelector((state) => state.filters.searchTerm);
-  
-  const { fetchGates } = useGatesData();
+  const [gates, setGates] = useState<IGate[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [draftTask, setDraftTask] = useState<DraftTaskInfo | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const dispatch = useDispatch();
+  const searchTerm = useSelector((state: RootState) => state.filter.searchTerm);
+  /*
+  //const [searchTerm, setSearchTerm] = useState('');
+  // Отладка Redux
+  useEffect(() => {
+    console.log('Redux store state:', store.getState());
+    console.log('Search term from Redux:', searchTerm);
+  }, [searchTerm]);
+  */
+  // Используем mock-данные, если бэкенд недоступен
+  const USE_MOCK = false;
+
+  const isCartActive = draftTask?.GatesCount && draftTask.GatesCount > 0;
+
+  const fetchGates = async (filterTitle: string = '') => {
+    setLoading(true);
+    setError(null);
+
+    try {
+      const data = await getGates(filterTitle);
+      setGates(Array.isArray(data) ? data : []);
+    } catch (err) {
+      console.error('Ошибка загрузки гейтов:', err);
+      setError('Не удалось загрузить список гейтов');
+      if (USE_MOCK) {
+        setGates(MOCK_GATES);
+      } else {
+        setGates([]);
+      }
+    } finally {
+      setLoading(false);
+    };
+
+    // try {
+    //   const task = await getDraftTaskInfo();
+    //   setDraftTask(task);
+    //   console.info('Проверка загрузки задачи:', task.GatesCount);
+    // } catch (err) {
+    //   console.error('Ошибка загрузки информации о задаче:', err);
+    // }
+  };
+  /*
+  const fetchDraftTask = async () => {
+    try {
+      const task = await getDraftTaskInfo();
+      setDraftTask(task);
+      console.info('Проверка загрузки задачи:', task.GatesCount);
+    } catch (err) {
+      console.error('Ошибка загрузки информации о задаче:', err);
+    }
+  };
+  */
+
+  useEffect(() => {
+    fetchGates();
+    //fetchDraftTask();
+  }, []);
 
   const handleSearchSubmit = (event: React.FormEvent) => {
     event.preventDefault();
     fetchGates(searchTerm);
   };
 
-  const handleSearchChange = (value: string) => {
-    dispatch(setSearchTermAction(value));
-  };
-
-  const handleAddToTask = (gateId: number) => {
+  const handleAddToTask = async (gateId: number) => {
     if (!draftTask || draftTask.TaskID === 0) {
       alert('Сначала создайте черновик задачи!');
       return;
     }
     try {
       console.log(`Добавление гейта ${gateId} в задачу ${draftTask.TaskID}`);
-      dispatch(incrementGatesCountAction());
+      // После успешного добавления обновите счётчик
+      setDraftTask(prev => prev ? { ...prev, GatesCount: prev.GatesCount + 1 } : null);
     } catch (err) {
       console.error('Ошибка добавления гейта:', err);
     }
@@ -66,64 +112,59 @@ export const IBMGatesList = () => {
         <AppNavbar />
         <div>
           <h1 className="gates-s-t">Выберите однокубитную операцию</h1>
-          {useMock && (
-            <Alert variant="warning" className="mb-3">
-              <strong>Режим MOCK:</strong> Используются тестовые данные
-            </Alert>
-          )}
         </div>
 
         <Form onSubmit={handleSearchSubmit}>
           <Row className="gates-s-f">
             <Col xs={12}>
               <div className="d-flex align-items-center w-100">
-                {/* Поле поиска */}
-                <Form.Control
+                 {/* Поле поиска */}
+                  <Form.Control
                   type="search"
                   placeholder="Введите название гейта"
                   value={searchTerm}
-                  onChange={(e) => handleSearchChange(e.target.value)}
+                  onChange={(e) => dispatch(setSearchTerm(e.target.value))}
                   className="gates-s-f input flex-grow-1"
-                />
-                
-                {/* Кнопка поиска */}
-                <Button
+                  />
+                  
+                  {/* Кнопка поиска */}
+                  <Button
                   variant="dark"
                   type="submit"
                   disabled={loading}
                   className="gates-s-f button"
                   style={{ flexShrink: 0 }}
-                >
+                  >
                   {loading ? 'Поиск...' : 'Найти'}
-                </Button>
+                  </Button>
                 
-                {/* Корзина */}
-                <div className="cart-wrapper">
-                  {draftTask?.GatesCount && draftTask.GatesCount > 0 ? (
-                    <a href={`/quantum_task/${draftTask.TaskID}`} className="d-flex align-items-center">
-                      <Image
-                        src="http://127.0.0.1:9000/ibm-pictures/img/basket.png"
-                        alt="Корзина"
-                        width={60}
-                        height={60}
-                      />
-                    </a>
-                  ) : (
-                    <span style={{ cursor: 'not-allowed' }} className="d-flex align-items-center">
-                      <Image
-                        src="http://127.0.0.1:9000/ibm-pictures/img/basket.png"
-                        alt="Корзина"
-                        width={60}
-                        height={60}
-                        style={{ opacity: 0.5 }}
-                      />
-                    </span>
-                  )}
-                  {draftTask?.GatesCount !== undefined && draftTask.GatesCount > 0 && (
-                    <Badge pill bg="secondary" className="cart-indicator">
-                      {draftTask.GatesCount}
-                    </Badge>
-                  )}
+                  {/* Корзина */}
+                    <div className="cart-wrapper">
+                    {draftTask?.GatesCount && draftTask.GatesCount > 0 ? (
+                        <a href={`/quantum_task/${draftTask.TaskID}`} className="d-flex align-items-center">
+                        <Image
+                            src="/basket.png"
+                            alt="Корзина"
+                            width={60}
+                            height={60}
+                        />
+                        {/* Бейдж с количеством */}
+                        <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                          {draftTask.GatesCount}
+                          <span className="visually-hidden">товаров в корзине</span>
+                        </span>
+                        </a>
+                      ) : (
+                        <span style={{ cursor: 'not-allowed' }} className="d-flex align-items-center">
+                        <Image
+                            src="/basket.png"
+                            alt="Корзина"
+                            width={60}
+                            height={60}
+                            style={{ opacity: 0.5 }}
+                        />
+                        </span>
+                    )}
                 </div>
               </div>
             </Col>
@@ -137,15 +178,12 @@ export const IBMGatesList = () => {
             <Spinner animation="border" variant="primary" />
           </div>
         ) : (
-          <Row className="gates-templ">
+          <Row className="justify-content-center">
             <Col xs={12} lg={10}>
               <Row xs={1} md={2} lg={2} xxl={2} className="g-4">
                 {gates.map(gate => (
                   <Col key={gate.ID_gate}>
-                    <GateCard 
-                      gate={gate} 
-                      onAddToTask={() => handleAddToTask(gate.ID_gate)}
-                    />
+                    <GateCard gate={gate} />
                   </Col>
                 ))}
               </Row>

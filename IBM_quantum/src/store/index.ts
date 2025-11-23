@@ -1,12 +1,12 @@
-import { configureStore } from "@reduxjs/toolkit";
-import filtersReducer from "./slices/filtersSlice";
-import gatesReducer from "./slices/gatesSlice";
+import { configureStore } from '@reduxjs/toolkit';
+import filterReducer from './slices/filterSlice';
+
+
 
 export const store = configureStore({
-  reducer: {
-    filters: filtersReducer,
-    gates: gatesReducer,
-  },
+    reducer: {
+        filter: filterReducer,
+    },
 });
 
 export type RootState = ReturnType<typeof store.getState>;
