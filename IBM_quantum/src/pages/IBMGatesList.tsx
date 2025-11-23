@@ -13,7 +13,7 @@ import {
 } from 'react-bootstrap';
 import { AppNavbar } from '../components/Navbar';
 import { GateCard } from '../components/GateCard';
-import { getGates } from '../api/gatesApi';
+import { getGates, getDraftTaskInfo } from '../api/gatesApi';
 import type { IGate, DraftTaskInfo } from '../types/types';
 import { MOCK_GATES } from '../api/mock'
 import './styles/IBMGatesList.css';
@@ -31,19 +31,12 @@ export const IBMGatesList = () => {
   const fetchGates = async (filterTitle: string = '') => {
     setLoading(true);
     setError(null);
+
     try {
-      if (USE_MOCK) {
-        // Имитация задержки
-        await new Promise(resolve => setTimeout(resolve, 500));
-        const filtered = MOCK_GATES.filter(gate =>
-          gate.Title.toLowerCase().includes(filterTitle.toLowerCase())
-        );
-        setGates(filtered);
-      } else {
-        const data = await getGates(filterTitle);
-        setGates(Array.isArray(data) ? data : []);
-      }
+      const data = await getGates(filterTitle);
+      setGates(Array.isArray(data) ? data : []);
     } catch (err) {
+      console.error('Проверка загрузки задачи:', draftTask?.TaskID);
       console.error('Ошибка загрузки гейтов:', err);
       setError('Не удалось загрузить список гейтов');
       if (USE_MOCK) {
@@ -52,10 +45,20 @@ export const IBMGatesList = () => {
         setGates([]);
       }
     } finally {
+      // const task = await getDraftTaskInfo();
+      // setDraftTask(task);
+      // console.info('Проверка загрузки задачи:', task.GatesCount);
       setLoading(false);
     }
-  };
 
+    try {
+      const task = await getDraftTaskInfo();
+      setDraftTask(task);
+      console.info('Проверка загрузки задачи:', task.GatesCount);
+    } finally {
+      console.info('Проверка загрузки задачи:', "жопа");
+    }
+  };
 
   useEffect(() => {
     fetchGates();
@@ -118,16 +121,21 @@ export const IBMGatesList = () => {
                     {draftTask?.GatesCount && draftTask.GatesCount > 0 ? (
                         <a href={`/quantum_task/${draftTask.TaskID}`} className="d-flex align-items-center">
                         <Image
-                            src="http://127.0.0.1:9000/ibm-pictures/img/basket.png"
+                            src="basket.png"
                             alt="Корзина"
                             width={60}
                             height={60}
                         />
+                        {/* Бейдж с количеством */}
+                        <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                          {draftTask.GatesCount}
+                          <span className="visually-hidden">товаров в корзине</span>
+                        </span>
                         </a>
-                    ) : (
+                      ) : (
                         <span style={{ cursor: 'not-allowed' }} className="d-flex align-items-center">
                         <Image
-                            src="http://127.0.0.1:9000/ibm-pictures/img/basket.png"
+                            src="basket.png"
                             alt="Корзина"
                             width={60}
                             height={60}
@@ -135,11 +143,11 @@ export const IBMGatesList = () => {
                         />
                         </span>
                     )}
-                    {draftTask?.GatesCount !== undefined && draftTask.GatesCount > 0 && (
+                    {/* {draftTask?.GatesCount !== undefined && draftTask.GatesCount > 0 && (
                         <Badge pill bg="secondary" className="cart-indicator">
                         {draftTask.GatesCount}
                         </Badge>
-                    )}
+                    )} */}
                     </div>
                 </div>
                 </Col>

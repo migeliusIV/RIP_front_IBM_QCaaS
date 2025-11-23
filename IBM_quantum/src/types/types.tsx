@@ -23,3 +23,8 @@ export interface Breadcrumb {
     path?: string;
     active?: boolean;
 }
+
+export interface DraftTaskInfo {
+    TaskID: number;
+    GatesCount: number;
+}
