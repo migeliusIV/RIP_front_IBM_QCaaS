@@ -6,7 +6,7 @@ export const AppNavbar = () => {
     <Navbar bg="light" variant="light" fixed="top" className="shadow-sm border-bottom">
       <Container fluid className="px-4">
         {/* Единый бренд как ссылка */}
-        <Navbar.Brand as={Link} to="/IBM" className="fs-4">
+        <Navbar.Brand as={Link} to="/" className="fs-4">
           IBM
         </Navbar.Brand>
 

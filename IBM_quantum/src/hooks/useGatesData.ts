@@ -11,7 +11,7 @@ import { useAppSelector } from './redux';
 
 export const useGatesData = () => {
   const dispatch = useAppDispatch();
-  const searchTerm = useAppSelector((state) => state.filters.searchTerm);
+  const searchTerm = useAppSelector((state) => state.filter.searchTerm);
 
   // Функция для определения режима работы
   const determineMode = async () => {

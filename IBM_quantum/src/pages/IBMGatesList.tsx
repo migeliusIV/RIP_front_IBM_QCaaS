@@ -6,27 +6,25 @@ import {
   Col,
   Spinner,
   Form,
-  Badge,
   Image,
   Button,
   Alert
 } from 'react-bootstrap';
 import { AppNavbar } from '../components/Navbar';
 import { GateCard } from '../components/GateCard';
-import { getGates, getDraftTaskInfo } from '../api/gatesApi';
+import { getGates/*, getDraftTaskInfo */} from '../api/gatesApi';
 import { useSelector, useDispatch } from 'react-redux';
 import { setSearchTerm } from '../store/slices/filterSlice';
 import type { RootState } from '../store';
 import type { IGate, DraftTaskInfo } from '../types';
 import { MOCK_GATES } from '../api/mock'
 import './styles/IBMGatesList.css';
-import { store } from '../store';
-import { Link } from 'react-router-dom';
+//import { Link } from 'react-router-dom';
 
 export const IBMGatesList = () => {
   const [gates, setGates] = useState<IGate[]>([]);
   const [loading, setLoading] = useState(true);
-  const [draftTask, setDraftTask] = useState<DraftTaskInfo | null>(null);
+  const [draftTask/*, setDraftTask*/] = useState<DraftTaskInfo | null>(null);
   const [error, setError] = useState<string | null>(null);
   const dispatch = useDispatch();
   const searchTerm = useSelector((state: RootState) => state.filter.searchTerm);
@@ -40,8 +38,6 @@ export const IBMGatesList = () => {
   */
   // Используем mock-данные, если бэкенд недоступен
   const USE_MOCK = false;
-
-  const isCartActive = draftTask?.GatesCount && draftTask.GatesCount > 0;
 
   const fetchGates = async (filterTitle: string = '') => {
     setLoading(true);
@@ -91,7 +87,7 @@ export const IBMGatesList = () => {
     event.preventDefault();
     fetchGates(searchTerm);
   };
-
+/*
   const handleAddToTask = async (gateId: number) => {
     if (!draftTask || draftTask.TaskID === 0) {
       alert('Сначала создайте черновик задачи!');
@@ -105,7 +101,7 @@ export const IBMGatesList = () => {
       console.error('Ошибка добавления гейта:', err);
     }
   };
-
+*/
   return (
     <div className="gates-body">
       <Container fluid className="pt-4">
@@ -143,7 +139,7 @@ export const IBMGatesList = () => {
                     {draftTask?.GatesCount && draftTask.GatesCount > 0 ? (
                         <a href={`/quantum_task/${draftTask.TaskID}`} className="d-flex align-items-center">
                         <Image
-                            src="/basket.png"
+                            src="/RIP_SPA/basket.png"
                             alt="Корзина"
                             width={60}
                             height={60}
@@ -157,7 +153,7 @@ export const IBMGatesList = () => {
                       ) : (
                         <span style={{ cursor: 'not-allowed' }} className="d-flex align-items-center">
                         <Image
-                            src="/basket.png"
+                            src="/RIP_SPA/basket.png"
                             alt="Корзина"
                             width={60}
                             height={60}

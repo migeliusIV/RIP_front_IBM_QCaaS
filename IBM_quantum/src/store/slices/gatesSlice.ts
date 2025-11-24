@@ -1,8 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
-import { useSelector } from "react-redux";
+//import { useSelector } from "react-redux";
 import type { IGate, DraftTaskInfo } from '../../types';
-import type { RootState } from '../index';
+//import type { RootState } from '../index';
 
 interface GatesState {
   data: IGate[];
@@ -52,12 +52,12 @@ const gatesSlice = createSlice({
   }
 });
 
-// Хуки для доступа к состоянию
-export const useGates = () => useSelector((state: RootState) => state.gates.data);
-export const useGatesLoading = () => useSelector((state: RootState) => state.gates.loading);
-export const useGatesError = () => useSelector((state: RootState) => state.gates.error);
-export const useDraftTask = () => useSelector((state: RootState) => state.gates.draftTask);
-export const useMockMode = () => useSelector((state: RootState) => state.gates.useMock);
+// // Хуки для доступа к состоянию
+// export const useGates = () => useSelector((state: RootState) => state.gates.data);
+// export const useGatesLoading = () => useSelector((state: RootState) => state.gates.loading);
+// export const useGatesError = () => useSelector((state: RootState) => state.gates.error);
+// export const useDraftTask = () => useSelector((state: RootState) => state.gates.draftTask);
+// export const useMockMode = () => useSelector((state: RootState) => state.gates.useMock);
 
 // Экспортируем actions
 export const {
