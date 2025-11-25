@@ -34,7 +34,6 @@ export default defineConfig({
       }
     })
   ],
-  base: "/RIP_SPA/", 
   server: {
     port: 5173,
     proxy: {

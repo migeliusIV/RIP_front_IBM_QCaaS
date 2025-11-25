@@ -36,7 +36,7 @@ export const GateCard = ({ gate }: GateCardProps) => {
         </div>
         <div className="gates-crd-img">
           <img
-            src={gate.Image || '/RIP_SPA/imageError.gif'}
+            src={gate.Image || '/imageError.gif'}
             alt={gate.Title}
             className="img-fluid"
           />

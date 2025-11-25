@@ -20,7 +20,7 @@ export const HomePage = () => {
                     </div>
                     <div className="video-content">
                         <video autoPlay loop muted playsInline className="home-video">
-                            <source src="/RIP_SPA/Quantum-Code-Animation-v4.mp4" type="video/mp4" />
+                            <source src="/Quantum-Code-Animation-v4.mp4" type="video/mp4" />
                             Ваш браузер не поддерживает видео.
                         </video>
                     </div>
