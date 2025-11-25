@@ -1,7 +1,9 @@
 /*===========Profile Page============*/
 .profile-body {
     min-height: 100vh;
+    width: 100vw;
     display: flex;
+    font-family: 'IBM Plex Mono', monospace;
     flex-direction: column;
     background-image: url('http://127.0.0.1:9000/ibm-pictures/img/background_properties.png');
     background-repeat: no-repeat;
