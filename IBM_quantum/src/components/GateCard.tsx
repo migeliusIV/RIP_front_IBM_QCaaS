@@ -13,26 +13,30 @@ export const GateCard = ({ gate }: GateCardProps) => {
     <Card className="gates-card h-100">
       <div className="gates-crd-cnt">
         <div className="gates-crd-txt">
-          {gate.TheAxis !== 'non' ? (
-            <div className="attributes mb-2">
-              <Badge bg="info" className="attribute-editable me-2">
-                Требуется ввод данных
+          {/* Всегда используем div.attributes для единообразия */}
+          <div className="attributes">
+            {gate.TheAxis !== 'non' ? (
+              <>
+                <Badge bg="info" className="attribute-editable">
+                  Требуется ввод данных
+                </Badge>
+                <Badge bg="secondary" className="attribute-axis">
+                  Изменение по оси {gate.TheAxis}
+                </Badge>
+              </>
+            ) : (
+              <Badge bg="light" text="dark" className="attribute-not-editable">
+                Не требуется ввод данных
               </Badge>
-              <Badge bg="secondary" className="attribute-axis me-2">
-                Изменение по оси {gate.TheAxis}
-              </Badge>
-            </div>
-          ) : (
-            <Badge bg="light" text="dark" className="attribute-not-editable mb-2">
-              Не требуется ввод данных
-            </Badge>
-          )}
+            )}
+          </div>
+          
           <h5 className="gates-crd-ttl">{gate.Title}</h5>
           <p className="gates-crd-dscr">{gate.Description}</p>
         </div>
         <div className="gates-crd-img">
           <img
-            src={gate.Image || 'http://127.0.0.1:9000/ibm-pictures/img/imageError.gif'}
+            src={gate.Image || '/RIP_SPA/imageError.gif'}
             alt={gate.Title}
             className="img-fluid"
           />

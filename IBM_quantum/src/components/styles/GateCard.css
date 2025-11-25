@@ -3,7 +3,7 @@
     background-color: #ffffff;
     border: 1px solid #ccc;
     border-radius: 10px;
-    width: 530px;
+    width: 40vw;
     height: 220px;
     display: flex;
     flex-direction: column;
@@ -55,9 +55,19 @@
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
+
 /*--------atributes--------*/
-.attribute-not-editable{
-    margin: 0 auto 10px 0;
+.attributes {
+    align-items: center;     /* ← Центрируем вертикально (опционально) */
+    font-family: IBM Plex Mono !important;
+    text-align: center !important;
+    height: 20px !important;
+    margin: 0 auto 10px auto !important;
+    width: 100%;             /* ← Не фиксируем ширину, чтобы центрировалось */
+    gap: 8px;                /* ← Отступ между элементами */
+}
+
+.attribute-not-editable {
     font-size: 9px !important;
     text-align: center !important;
     color: #171717 !important;
@@ -65,40 +75,28 @@
     width: 140px !important;
     height: 20px !important;
     border-radius: 10px;
-
-    padding-top: 5px;
+    padding-bottom: 5px !important;
 }
 
-.attributes{
-    display: flex;  
-    font-family: IBM Plex Mono !important;
-    text-align: center !important;
-    margin: 0 auto 10px 0 !important;
-    width: 200px !important;
-}
-
-.attribute-editable{
-    flex: 1;
-    font-size: 9px !important;
-    color: #0D4DD4 !important;
-    background-color: #D0E2FF !important;
-    width: 140px !important;
-    height: 20px !important;
-    border-radius: 10px;
-    padding-bottom: 5px ;
-}
-.attribute-axis{
+.attribute-editable,
+.attribute-axis {
     flex: 1;
     font-size: 9px !important;
     text-align: center !important;
-    color: #8448D7 !important;
-    background-color: #EADEFF !important;
+    background-color: #D0E2FF !important; /* или #EADEFF для .attribute-axis */
     width: 140px !important;
     height: 20px !important;
     border-radius: 10px;
-    
     padding-bottom: 5px;
 }
+
+/* Для .attribute-axis — отдельный цвет */
+.attribute-axis {
+    background-color: #EADEFF !important;
+    color: #8448D7 !important;
+}
+
+
 /*--------buttons----------*/
 .card-button-add {
     font-family: 'Poppins', sans-serif;
@@ -161,4 +159,122 @@
     text-decoration: underline;
     transition: all 0.3s ease;
     color:rgb(9, 9, 9);
+}
+
+/* Мобильная адаптация */
+/* Мобильная адаптация для поиска и карточек */
+@media (max-width: 976px) {    
+    /* Карточки - уже и адаптивные */
+    .gates-card {
+        width: 85vw !important; /* Чуть уже чем 90vw для отступов */
+        max-width: 380px !important;
+        margin: 0 auto 20px auto !important;
+        padding: 15px !important;
+        height: auto !important; /* Автоматическая высота */
+        min-height: 200px !important;
+    }
+    
+    .gates-crd-cnt {
+        flex-direction: column !important;
+        gap: 10px !important;
+        margin-bottom: 10px !important;
+    }
+    
+    .gates-crd-txt {
+        width: 100% !important;
+        order: 2 !important; /* Текст после изображения */
+    }
+    
+    .gates-crd-img {
+        order: 1 !important; /* Изображение перед текстом */
+        justify-content: center !important;
+        margin-bottom: 10px !important;
+    }
+    
+    .gates-crd-img img {
+        width: 100% !important;
+        max-width: 250px !important;
+        height: 150px !important;
+    }
+    
+    .gates-crd-ttl {
+        font-size: 18px !important;
+        text-align: center !important;
+    }
+    
+    .gates-crd-dscr {
+        font-size: 14px !important;
+        text-align: center !important;
+    }
+    
+    /* Кнопки в карточках */
+    .card-button-add,
+    .card-button-more {
+        width: 100% !important;
+        text-align: center !important;
+        margin: 0 0 20px 0!important;
+        padding: 10px !important;
+        font-size: 15px !important;
+    }
+    
+    .attributes {
+        flex-direction:row !important;
+        flex-wrap: wrap !important;
+        justify-content: center !important;
+        gap: 5px !important;
+        width: 100% !important;
+        margin: 10px auto !important;
+        height: auto !important;
+    }
+    
+    /* Одиночный атрибут - центрируем */
+    .attribute-not-editable {
+        margin: 0 auto 10px auto !important;
+        display: block !important;
+        width: 140px !important;
+    }
+    
+    /* Стили для Badge внутри attributes */
+    .attributes .attribute-editable,
+    .attributes .attribute-axis {
+        font-size: 8px !important;
+        width: 120px !important;
+        height: 20px !important;
+        flex: 0 0 auto !important;
+        margin: 0 !important;
+    }
+}
+
+@media (max-width: 480px) {    
+    .gates-card {
+        flex-direction: column;
+        width: 80vw !important;
+        padding: 12px !important;
+    }
+    
+    .gates-crd-ttl {
+        font-size: 16px !important;
+    }
+    
+    .gates-crd-dscr {
+        font-size: 12px !important;
+    }
+    
+    /* Атрибуты для маленьких экранов */
+    .attributes {
+        gap: 8px !important;
+        flex-direction:row !important;
+    }
+
+    .attribute-editable,
+    .attribute-axis {
+        flex: 1;
+        width: 110px !important;
+        font-size: 7px !important;
+    }
+    
+    .attribute-not-editable {
+        width: 120px !important;
+        font-size: 8px !important;
+    }
 }

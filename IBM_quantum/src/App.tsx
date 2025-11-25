@@ -15,7 +15,7 @@ const MainLayout = () => (
 
 function App() {
     return (
-        <BrowserRouter basename="/RIP_SPA">
+        <BrowserRouter basename="/RIP_SPA/">
             <Routes>
                 <Route path="/" element={<HomePage />} />
                 <Route path="/gates" element={<IBMGatesList />} />

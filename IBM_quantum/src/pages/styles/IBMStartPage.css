@@ -8,7 +8,8 @@
 
 .home-page-body {
     flex: 1;
-    width: 100vw;    /* 100% ширины окна */
+    margin: 52px;
+    /*width: 100vw;    /* 100% ширины окна */
     min-height: 100vh; /* 100% высоты окна */
 }
 
@@ -113,7 +114,7 @@
 @media (max-width: 992px) {
     .home-page-container {
         flex-direction: column;
-        padding: 0 20px;
+        padding: 10px 10px;
         text-align: center;
     }
 
@@ -123,7 +124,7 @@
     }
 
     .video-content {
-        order: -1; /* Видео сверху на мобильных */
-        margin-bottom: 30px;
+        /*order: -1; /* Видео сверху на мобильных */
+        margin-bottom: 0;
     }
 }

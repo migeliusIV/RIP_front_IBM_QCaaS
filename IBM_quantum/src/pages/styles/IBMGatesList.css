@@ -84,6 +84,11 @@ html {
     align-items: center;
     margin-left: 25px !important;
 }
+
+/* .cart-wrapper image {
+    width: 60px;
+    height: 60px;
+} */
 /*--------task-button--------*/
 .gates-t-b {
     flex: 0;
@@ -125,4 +130,34 @@ html {
     gap: 50px !important;
     margin: 20px auto;
     max-width: 1400px;
+}
+
+@media (max-width: 768px) {  
+    .gates-s-f .btn {
+        padding: 12px 24px !important;
+        font-weight: 300 !important;
+        font-size: 11px !important;
+    }
+
+    .gates-s-f {
+        max-width: 80vw;
+        height: 30px;
+        margin: 20px 40px 40px;
+    }
+    
+    .gates-s-f .form-control{
+        font-size: 12px !important;
+    }
+
+    .cart-wrapper image {
+        width: 30px !important;
+        height: 30px !important;
+    }
+}
+
+@media (max-width: 480px) {  
+    .gates-s-f {
+        max-width: 95vw;
+        margin: 20px 0 40px;
+    }
 }
