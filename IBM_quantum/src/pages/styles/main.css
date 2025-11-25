@@ -1,0 +1,19 @@
+.background-color-profile{
+    width: 100vw;
+    min-height: 94vh;
+    font-family: 'IBM Plex Mono', monospace;
+    background-color: #F4F4F4  !important;
+    margin-bottom: -30px;
+}
+
+.background-color-login{
+    width: 100vw;
+    font-family: 'IBM Plex Mono', monospace;
+    background-color: #F4F4F4 !important;
+}
+
+.background-color-register{
+    width: 100vw;
+    font-family: 'IBM Plex Mono', monospace;
+    background-color: #F4F4F4  !important;
+}
