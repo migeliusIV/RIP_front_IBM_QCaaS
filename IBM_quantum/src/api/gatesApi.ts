@@ -7,21 +7,20 @@ import {
 } from './mock';
 
 const isTauri = import.meta.env.VITE_TARGET === 'tauri';
-const BACKEND_IP = 'https://10.241.187.182:8080/'; 
+const BACKEND_IP = 'http://46.138.182.80:8080'; 
 const API_BASE_URL = isTauri ? `${BACKEND_IP}/api` : '/api';
 
 // Состояние доступности бэкенда
 let isBackendAvailable: boolean | null = null;
 
-// Вспомогательные функции
 export const checkBackendAvailability = async (): Promise<boolean> => {
     if (isBackendAvailable !== null) return isBackendAvailable;
     
+    const healthUrl = isTauri ? `${BACKEND_IP}/health` : '/health';
+    
     try {
-        // Используем GET вместо HEAD (более надёжно)
-        const response = await fetch('/health', {
+        const response = await fetch(healthUrl, {
             method: 'GET',
-            // Убираем таймаут из fetch, используем общий
             signal: AbortSignal.timeout(3000)
         });
         isBackendAvailable = response.ok;
