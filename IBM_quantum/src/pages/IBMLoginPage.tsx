@@ -16,7 +16,7 @@ export const LoginPage = () => {
 
     useEffect(() => {
         if (isAuthenticated) {
-            navigate('/profile');
+            navigate('/gates');
         }
         dispatch(clearError()); // Раскомментировать
     }, [isAuthenticated, navigate, dispatch]);
@@ -25,7 +25,7 @@ export const LoginPage = () => {
         e.preventDefault();
         try {
             await dispatch(loginUser(formData)).unwrap();
-            navigate('/profile');
+            navigate('/gates');
         } catch (err) {
             console.error('Login error:', err);
             // Ошибка уже обработана в slice, можно не делать ничего

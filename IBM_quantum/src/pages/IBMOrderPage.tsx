@@ -1,281 +1,284 @@
-import React, { useEffect, useState } from 'react';
-import { Container, Row, Col, Card, Form, Button, Image } from 'react-bootstrap';
-import { useParams, Link } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { 
-    fetchOrderById, 
-    updateOrderFields, 
-    updateFactorDescription, 
-    removeFactorFromOrder,
-    submitOrder,
-    deleteOrder,
-    resetOperationSuccess,
-    clearCurrentOrder
-} from '../store/slices/fraxSlice';
-import { Trash, CheckCircleFill, ExclamationCircle } from 'react-bootstrap-icons';
+import { Trash, Floppy, PlayCircle } from 'react-bootstrap-icons';
+import './styles/IBMOrderPage.css';
+import { AppNavbar } from '../components/Navbar';
+
+// Redux
+import {
+  fetchTaskById,
+  updateTaskDescription,
+  updateGateAngle,
+  removeGateFromTask,
+  deleteTask,
+  resolveTask,
+  resetOperationSuccess,
+  clearCurrentTask,
+  formedTask,
+} from '../store/slices/taskSlice';
 import type { AppDispatch, RootState } from '../store';
 
+// Типы
+import type {
+  InternalAppHandlerDTORespTasks,
+  InternalAppHandlerDTORespGatesDegrees,
+} from '../api/Api';
 
-
-export const DefaultImage = '/mock_images/default.png';
-
-const STATUS_DRAFT = 1;
-const STATUS_COMPLETED = 4;
-const STATUS_REJECTED = 5;
-
-export const OrderPage = () => {
-    const { id } = useParams<{ id: string }>();
-    const dispatch = useDispatch<AppDispatch>();
-    const { currentOrder, loading, operationSuccess } = useSelector((state: RootState) => state.frax);
-    const [formData, setFormData] = useState({ age: 0, gender: false, weight: 0, height: 0 });
-    const [descriptions, setDescriptions] = useState<{[key: number]: string}>({});
-
-    useEffect(() => {
-        if (id) {
-            dispatch(fetchOrderById(id));
-        }
-        return () => { dispatch(clearCurrentOrder()); dispatch(resetOperationSuccess()); }
-    }, [id, dispatch]);
-
-    useEffect(() => {
-        if (currentOrder) {
-            setFormData({
-                age: currentOrder.age || 0,
-                gender: currentOrder.gender || false,
-                weight: currentOrder.weight || 0,
-                height: currentOrder.height || 0
-            });
-            const descMap: {[key: number]: string} = {};
-            currentOrder.factors?.forEach(f => {
-                if(f.factor_id) descMap[f.factor_id] = f.description || '';
-            });
-            setDescriptions(descMap);
-        }
-    }, [currentOrder]);
-
-    if (operationSuccess) {
-        return (
-            <Container className="mt-5 pt-5 text-center">
-                <Card className="p-5 shadow-sm border-0">
-                    <h2 className="text-dark mb-3">Действие выполнено успешно!</h2>
-                    <p className="text-muted">Заявка была сформирована/удалена.</p>
-                    <div className="d-flex justify-content-center gap-3">
-                        <Link to="/factors"><Button variant="outline-danger">К факторам</Button></Link>
-                        <Link to="/orders"><Button variant="danger">К списку заявок</Button></Link>
-                    </div>
-                </Card>
-            </Container>
-        );
-    }
-
-    if (loading || !currentOrder) return <Container className="pt-5"><p>Загрузка...</p></Container>;
-
-    const isDraft = currentOrder.status === STATUS_DRAFT;
-    const isCompleted = currentOrder.status === STATUS_COMPLETED;
-    const isRejected = currentOrder.status === STATUS_REJECTED;
-
-    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const val = e.target.type === 'checkbox' || e.target.type === 'radio' 
-            ? (e.target.id === 'gender-female') 
-            : parseFloat(e.target.value);
-            
-        setFormData(prev => ({ ...prev, [e.target.name]: val }));
-    };
-
-    const handleSaveMain = () => {
-        if(currentOrder.id) {
-            console.log("Отправка данных:", formData);
-            dispatch(updateOrderFields({ 
-                id: currentOrder.id, 
-                data: { ...formData, gender: formData.gender } 
-            }))
-            .unwrap()
-            .then(() => alert("Данные успешно сохранены в БД!"))
-            .catch(() => alert("Ошибка при сохранении"));
-        }
-    };
-
-    const handleDescBlur = (factorId: number) => {
-        if(currentOrder.id && descriptions[factorId] !== undefined) {
-            dispatch(updateFactorDescription({
-                orderId: currentOrder.id,
-                factorId,
-                desc: descriptions[factorId]
-            }));
-        }
-    };
-
-    return (
-        <Container className="pt-5 mt-5 pb-5">
-            <Card className="border-0 shadow-sm mb-4">
-                <Card.Body className="text-center py-2">
-                    <h4 className="fw-bold m-0">Составление заявки</h4>
-                </Card.Body>
-            </Card>
-
-            <Row className="mb-4 g-4">
-                <Col md={6}>
-                    <Card className="h-100 border-0 shadow-sm" style={{ backgroundColor: '#f8f9fa' }}>
-                        <Card.Body>
-                            <h5 className="fw-bold mb-3">Введите данные в анкету</h5>
-                            <Form>
-                                <Form.Group as={Row} className="mb-2 align-items-center">
-                                    <Form.Label column sm={4}>Возраст</Form.Label>
-                                    <Col sm={8}>
-                                        <Form.Control 
-                                            type="number" name="age" 
-                                            value={formData.age} onChange={handleInputChange} 
-                                            disabled={!isDraft}
-                                        />
-                                    </Col>
-                                </Form.Group>
-                                <Form.Group as={Row} className="mb-2 align-items-center">
-                                    <Form.Label column sm={4}>Пол</Form.Label>
-                                    <Col sm={8}>
-                                        <Form.Check 
-                                            inline type="radio" label="Мужской" 
-                                            name="gender" id="gender-male"
-                                            checked={!formData.gender} 
-                                            onChange={() => setFormData(p => ({...p, gender: false}))}
-                                            disabled={!isDraft}
-                                        />
-                                        <Form.Check 
-                                            inline type="radio" label="Женский" 
-                                            name="gender" id="gender-female"
-                                            checked={formData.gender} 
-                                            onChange={() => setFormData(p => ({...p, gender: true}))}
-                                            disabled={!isDraft}
-                                        />
-                                    </Col>
-                                </Form.Group>
-                                <Form.Group as={Row} className="mb-2 align-items-center">
-                                    <Form.Label column sm={4}>Вес (кг)</Form.Label>
-                                    <Col sm={8}>
-                                        <Form.Control 
-                                            type="number" name="weight" 
-                                            value={formData.weight} onChange={handleInputChange} 
-                                            disabled={!isDraft}
-                                        />
-                                    </Col>
-                                </Form.Group>
-                                <Form.Group as={Row} className="mb-2 align-items-center">
-                                    <Form.Label column sm={4}>Рост (см)</Form.Label>
-                                    <Col sm={8}>
-                                        <Form.Control 
-                                            type="number" name="height" 
-                                            value={formData.height} onChange={handleInputChange} 
-                                            disabled={!isDraft}
-                                        />
-                                    </Col>
-                                </Form.Group>
-                            </Form>
-                        </Card.Body>
-                    </Card>
-                </Col>
-
-                 {/* Правая колонка: Результат */}
-                <Col md={6}>
-                    <Card className="h-100 border-0 shadow-sm" style={{ backgroundColor: '#f8f9fa' }}>
-                        <Card.Body>
-                            <h5 className="fw-bold mb-3">Результат</h5>
-                            
-                            {/* Если ЗАВЕРШЕНА (4) */}
-                            {isCompleted && (
-                                <div>
-                                    <div className="mb-3">
-                                        <strong>Остеопоротические переломы</strong>
-                                        <div className="fs-4 text-success">{currentOrder.POF?.toFixed(1)}%</div>
-                                    </div>
-                                    <div>
-                                        <strong>Перелом шейки бедра</strong>
-                                        <div className="fs-4 text-success">{currentOrder.PHF?.toFixed(1)}%</div>
-                                    </div>
-                                </div>
-                            )}
-
-                            {isRejected && (
-                                <div className="text-center py-4">
-                                    <ExclamationCircle size={48} className="text-danger mb-3" />
-                                    <h5 className="text-danger fw-bold">Заявка отклонена</h5>
-                                    <p className="text-muted">
-                                        К сожалению, модератор отклонил вашу заявку. 
-                                        <br />
-                                        Возможно, данные были заполнены некорректно или нарушают правила сервиса.
-                                        <br />
-                                        Пожалуйста, создайте новую заявку или свяжитесь с поддержкой.
-                                    </p>
-                                </div>
-                            )}
-
-                            {!isCompleted && !isRejected && (
-                                <div className="text-muted d-flex align-items-center h-75">
-                                    <i>Результат будет доступен после обработки заявки модератором.</i>
-                                </div>
-                            )}
-                        </Card.Body>
-                    </Card>
-                </Col>
-            </Row>
-
-            <div className="d-flex flex-column gap-3 mb-5">
-                {currentOrder.factors?.map((f) => (
-                    <Card key={f.factor_id} className="border-0 shadow-sm">
-                        <Card.Body className="p-0">
-                            <Row className="g-0">
-                                <Col md={4} className="d-flex align-items-center p-3 border-end">
-                                    <div className="me-3" style={{ width: 60 }}>
-                                        <Image src={f.image || DefaultImage} fluid rounded />
-                                    </div>
-                                    <div className="flex-grow-1">
-                                        <h6 className="fw-bold mb-2">{f.title}</h6>
-                                        <Link to={`/factors/${f.factor_id}`}>
-                                            <Button size="sm" variant="danger">Подробнее</Button>
-                                        </Link>
-                                    </div>
-                                    {isDraft && (
-                                        <Button 
-                                            variant="link" className="text-muted p-0 ms-2"
-                                            onClick={() => dispatch(removeFactorFromOrder({ orderId: currentOrder.id!, factorId: f.factor_id! }))}
-                                        >
-                                            <Trash size={20} />
-                                        </Button>
-                                    )}
-                                </Col>
-
-                                <Col md={8} className="p-3 bg-light">
-                                    <Form.Control
-                                        as="textarea"
-                                        rows={3}
-                                        placeholder="Дополнительная информация..."
-                                        value={descriptions[f.factor_id!] || ''}
-                                        onChange={(e) => setDescriptions(prev => ({ ...prev, [f.factor_id!]: e.target.value }))}
-                                        onBlur={() => handleDescBlur(f.factor_id!)}
-                                        disabled={!isDraft}
-                                        className="border-0 bg-white"
-                                        style={{ resize: 'none' }}
-                                    />
-                                </Col>
-                            </Row>
-                        </Card.Body>
-                    </Card>
-                ))}
-            </div>
-
-            {isDraft && (
-                <Row>
-                    <Col className="d-flex gap-2">
-                        <Button variant="outline-success" onClick={handleSaveMain}>Сохранить изменения</Button>
-                        <Button variant="outline-danger" onClick={() => {
-                            if(window.confirm('Удалить заявку?')) dispatch(deleteOrder(currentOrder.id!));
-                        }}>Удалить заявку</Button>
-                    </Col>
-                    <Col className="text-end">
-                         <Button variant="outline-success" size="lg" onClick={() => dispatch(submitOrder(currentOrder.id!))}>
-                            Сформировать <CheckCircleFill className="ms-2"/>
-                        </Button>
-                    </Col>
-                </Row>
-            )}
-        </Container>
-    );
+// Вспомогательная функция преобразования оси
+const parseAxis = (axis?: string | null): 'x' | 'y' | 'z' | null => {
+  if (!axis || axis === 'non') return null;
+  const lower = axis.toLowerCase();
+  return lower === 'x' || lower === 'y' || lower === 'z' ? lower : null;
 };
+
+export const DefaultGateImage = '/RIP_SPA/imageError.gif';
+
+export const QuantumTaskPage = () => {
+  const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
+  const dispatch = useDispatch<AppDispatch>();
+
+  const { currentTask, loading, operationSuccess } = useSelector(
+    (state: RootState) => state.task
+  );
+
+  // 1. Загрузка задачи при входе
+  useEffect(() => {
+    if (id) {
+      dispatch(fetchTaskById(Number(id)));
+    }
+    return () => {
+      dispatch(clearCurrentTask());
+      dispatch(resetOperationSuccess());
+    };
+  }, [id, dispatch]);
+
+  // 2. После успешной операции — показываем экран успеха
+  if (operationSuccess) {
+    return (
+      <div className="quantum-success-container">
+        <div className="quantum-success-card">
+          <h3>Действие выполнено успешно!</h3>
+          <p>Статус заявки был обновлён.</p>
+          <button
+            onClick={() => navigate('/tasks')}
+            className="quantum-success-btn"
+          >
+            К списку задач
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  if (loading || !currentTask) {
+    return (
+      <div className="quantum-loading-container">
+        <div className="quantum-spinner"></div>
+        <span className="quantum-loading-text">Загрузка...</span>
+      </div>
+    );
+  }
+
+  const isDraft = currentTask.task_status === 'черновик';
+  const isFormed = currentTask.task_status === 'сформирован';
+  const isCompleted = currentTask.task_status === 'совершён';
+  const isRejected = currentTask.task_status === 'отклонён';
+
+  const amplitude0 = (currentTask.res_koeff_0 ?? 0).toFixed(4);
+  const amplitude1 = (currentTask.res_koeff_1 ?? 0).toFixed(4);
+  const resultStr = `${amplitude0}|0⟩ + ${amplitude1}|1⟩`;
+
+  // --- Обработчики ---
+  const handleSaveDescription = () => {
+    if (currentTask.id_task && currentTask.task_description !== undefined) {
+      dispatch(
+        updateTaskDescription({
+          id: currentTask.id_task,
+          description: currentTask.task_description,
+        })
+      );
+    }
+  };
+
+  const handleAngleChange = (
+    serviceId: number,
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const degrees = parseFloat(e.target.value) || 0;
+    if (currentTask.id_task) {
+      dispatch(updateGateAngle({ taskId: currentTask.id_task, serviceId, degrees }));
+    }
+  };
+
+  const handleDeleteGate = (serviceId: number) => {
+    if (currentTask.id_task && confirm('Удалить гейт из задачи?')) {
+      dispatch(removeGateFromTask({ taskId: currentTask.id_task, serviceId }));
+    }
+  };
+
+  const handleDeleteTask = () => {
+    if (currentTask.id_task && confirm('Удалить задачу? Это действие нельзя отменить.')) {
+      dispatch(deleteTask(currentTask.id_task));
+    }
+  };
+
+  const handleFormed = () => {
+    if (currentTask.id_task && confirm('Уверены, что хотите сформировать задачу? Это действие нельзя отменить.')) {
+      dispatch(formedTask(currentTask.id_task));
+    }
+  };
+
+  const handleResolve = (action: 'complete' | 'reject') => {
+    if (currentTask.id_task) {
+      const msg = action === 'complete' ? 'Завершить заявку?' : 'Отклонить заявку?';
+      if (confirm(msg)) {
+        dispatch(resolveTask({ id: currentTask.id_task, action }));
+      }
+    }
+  };
+
+  return (
+    <div className="quantum-task-body">
+      <AppNavbar />
+
+      <div className="quantum-task-content">
+        {/* Описание + результат + удаление */}
+        <div className="quantum-description-container">
+          <div className="quantum-description-block">
+            <div className="quantum-block-header">Описание</div>
+            <div className="quantum-block-text">
+              Добавьте описание задачи, чтобы не перепутать её с другими.
+            </div>
+            <textarea
+              value={currentTask.task_description ?? ''}
+              onChange={(e) =>
+                dispatch({
+                  type: 'task/setCurrentTaskField',
+                  payload: { field: 'task_description', value: e.target.value },
+                })
+              }
+              className="quantum-description-field"
+              rows={5}
+              disabled={!isDraft}
+            />
+          </div>
+
+          <div className="quantum-delete-button-container">
+            <div className="quantum-result-container">
+              <div className="quantum-block-header">Результат</div>
+              <input
+                type="text"
+                value={resultStr}
+                readOnly
+                className="quantum-result-field"
+              />
+            </div>
+            {isDraft && (
+              <button onClick={handleDeleteTask} className="quantum-delete-btn">
+                <Trash size={16} style={{ marginRight: '8px' }} />
+                Удалить задачу
+              </button>
+            )}
+          </div>
+        </div>
+
+        {/* Гейты */}
+        <div className="quantum-gates-container">
+          <div className="quantum-block-header">Укажите детали выражения</div>
+          <div className="quantum-block-text">
+            Расположите карточки в необходимом порядке и введите углы для операций вращения.
+          </div>
+
+          <div className="quantum-gates-list">
+            {currentTask.gates_degrees?.map((gd: InternalAppHandlerDTORespGatesDegrees) => {
+              if (gd.id_gate == null) return null;
+
+              // В реальности — можно загружать метаданные гейта (title/image/axis) через gate.id_gate
+              // Пока используем заглушку, или предположим, что бэкенд возвращает gate в ответе
+              const axis = gd.TheAxis;
+              const gateTitle = `${gd.titile ?? '?'}`;
+              const degrees = gd.degrees ?? 0;
+
+              return (
+                <div key={gd.id_gate} className="quantum-gate-card">
+                  <img
+                    src={gd.Image}
+                    alt={gd.Image}
+                    className="quantum-gate-image"
+                    width="70"
+                    height="50"
+                  />
+                  <div className="quantum-gate-name">{gateTitle}</div>
+
+                  {axis !== 'non' && (
+                    <div className="quantum-gate-angle">
+                      <span>θ =</span>
+                      <input
+                        type="number"
+                        value={degrees}
+                        onChange={(e) => handleAngleChange(gd.id_gate!, e)}
+                        className="quantum-angle-input"
+                        step="0.1"
+                        disabled={!isDraft}
+                      />
+                    </div>
+                  )}
+
+                  {isDraft && (
+                    <button
+                      onClick={() => handleDeleteGate(gd.id_gate!)}
+                      className="gate-delete-btn"
+                    >
+                      <Trash size={16} />
+                    </button>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+
+      {/* Кнопки управления */}
+      <div className="quantum-button-container">
+        {isDraft && (
+          <>
+            <button
+              onClick={handleSaveDescription}
+              className="quantum-save-btn quantum-save-btn-secondary"
+            >
+              <Floppy size={14} style={{ marginRight: '4px' }} /> Сохранить описание
+            </button>
+            <button
+              onClick={() => handleFormed()}
+              className="quantum-save-btn quantum-save-btn-success"
+            >
+              <PlayCircle size={14} style={{ marginRight: '4px' }} /> Сформировать заявку
+            </button>
+          </>
+        )}
+
+        {isFormed && (
+          <>
+            <button
+              onClick={() => handleResolve('reject')}
+              className="quantum-save-btn quantum-save-btn-danger"
+            >
+              <Trash size={14} style={{ marginRight: '4px' }} /> Отклонить
+            </button>
+            <button
+              onClick={() => handleResolve('complete')}
+              className="quantum-save-btn quantum-save-btn-success"
+            >
+              <PlayCircle size={14} style={{ marginRight: '4px' }} /> Принять
+            </button>
+          </>
+        )}
+      </div>
+    </div>
+  );
+};
+
+export default QuantumTaskPage;

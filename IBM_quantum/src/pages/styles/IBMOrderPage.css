@@ -1,0 +1,430 @@
+.homepage-wrapper {
+    min-height: 100vh;
+    width: 100vw;
+    display: flex;
+    flex-direction: column;
+    background-color: #F4F4F4;
+}
+
+.home-page-body {
+    flex: 1;
+    margin: 52px;
+    /*width: 100vw;    /* 100% ширины окна */
+    min-height: 100vh; /* 100% высоты окна */
+}
+
+/* =========== Quantum Task Page ================== */
+.quantum-task-body {
+  background-image: url('/ibm-pictures/img/background_order.png');
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-attachment: fixed;
+  background-position: right bottom;
+  background-color: #F4F4F4;
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  min-width: 100vw;
+}
+
+.quantum-task-header {
+  padding: 20px 30px;
+}
+
+.quantum-task-header h1 {
+  margin: 0;
+}
+
+.quantum-task-header a {
+  text-decoration: none;
+}
+
+.quantum-task-header img {
+  height: 40px;
+}
+
+/* ----------- main content ----------- */
+.quantum-task-content {
+  padding: 0 30px 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  max-width: 1300px;
+  font-family: 'IBM Plex Mono', monospace;
+  margin: 60px auto 20px 40px;
+}
+
+/* ---------- description --------- */
+.quantum-description-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  align-items: flex-start;
+}
+
+.quantum-description-block {
+  flex: 1;
+  min-width: 300px;
+}
+
+.quantum-block-header {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 24px;
+  font-weight: 500;
+  margin-bottom: 10px;
+  height: 26px;
+}
+
+.quantum-block-text {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 16px;
+  color: rgb(106, 106, 106);
+  margin-bottom: 20px;
+  max-width: 700px;
+  line-height: 1.5;
+}
+
+.quantum-description-field {
+  width: 100%;
+  max-width: 800px;
+  min-height: 100px;
+  padding: 12px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 14px;
+  color: black;
+  background-color: white;
+  border: 1px solid black;
+  border-radius: 5px;
+  resize: vertical;
+  box-sizing: border-box;
+}
+
+.quantum-description-field:focus {
+  outline: none;
+  border-color: #0062FF;
+}
+
+/* ---------- delete button --------- */
+.quantum-delete-button-container {
+  margin-top: 30px;
+  margin-left: 20px;
+}
+
+.quantum-delete-btn {
+  width: 160px;
+  height: 70px;
+  border-radius: 5px;
+  color: white;
+  background-color: rgba(52, 58, 63, 1);
+  border: none;
+  cursor: pointer;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.3s ease;
+  padding: 10px;
+  box-sizing: border-box;
+}
+
+.quantum-delete-btn:hover {
+  background-color: rgba(32, 38, 43, 1);
+}
+
+.quantum-delete-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* ---------- gates container --------- */
+.quantum-gates-container {
+  width: 100%;
+  max-width: 1000px;
+}
+
+.quantum-gates-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* ---------- gate cards --------- */
+.quantum-gate-card {
+  display: flex;
+  align-items: center;
+  background-color: white;
+  width: 100%;
+  max-width: 800px;
+  height: 70px;
+  margin: 10px 0;
+  position: relative;
+  padding-right: 10px;
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.quantum-gate-image {
+  object-fit: cover;
+  flex-shrink: 0;
+  margin-left: 10px;
+}
+
+.quantum-gate-name {
+  margin-left: 20px;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+.quantum-gate-angle {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.quantum-gate-angle span {
+  font-size: 16px;
+  white-space: nowrap;
+}
+
+.quantum-angle-input {
+  width: 80px;
+  height: 32px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  padding: 0 10px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 14px;
+  text-align: center;
+}
+
+.quantum-angle-input:focus {
+  outline: none;
+  border-color: #0062FF;
+}
+
+.gate-delete-btn {
+  position: absolute;
+  right: 10px;
+  justify-content: right;
+}
+
+/* ---------- result --------- */
+.quantum-result-container {
+  width: 100%;
+}
+
+.quantum-result-field {
+  width: 300px;
+  height: 40px;
+  padding: 0 12px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 14px;
+  color: black;
+  background-color: white;
+  border: 1px solid black;
+  border-radius: 5px;
+  margin: 10px 0;
+  box-sizing: border-box;
+}
+
+.quantum-result-field:focus {
+  outline: none;
+}
+
+/* ---------- buttons container --------- */
+.quantum-button-container {
+  display: flex;
+  gap: 15px;
+  padding: 0 30px 30px;
+  max-width: 1300px;
+  margin: 0 auto;
+  flex-wrap: wrap;
+}
+
+.quantum-save-btn {
+  padding: 12px 24px;
+  border-radius: 5px;
+  border: none;
+  cursor: pointer;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  min-width: 180px;
+  height: 45px;
+}
+
+.quantum-save-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.quantum-save-btn-primary {
+  background-color: #0062FF;
+  color: white;
+}
+
+.quantum-save-btn-primary:hover:not(:disabled) {
+  background-color: #0052D6;
+}
+
+.quantum-save-btn-secondary {
+  background-color: #6c757d;
+  color: white;
+}
+
+.quantum-save-btn-secondary:hover:not(:disabled) {
+  background-color: #545b62;
+}
+
+.quantum-save-btn-success {
+  background-color: #141414;
+  color: white;
+}
+
+.quantum-save-btn-success:hover:not(:disabled) {
+  background-color: #000000;
+}
+
+/* ---------- loading states --------- */
+.quantum-loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background-color: #F4F4F4;
+  gap: 20px;
+}
+
+.quantum-spinner {
+  width: 50px;
+  height: 50px;
+  border: 3px solid #f3f3f3;
+  border-top: 3px solid #0062FF;
+  border-radius: 50%;
+  animation: quantum-spin 1s linear infinite;
+}
+
+.quantum-loading-text {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 16px;
+  color: #333;
+}
+
+@keyframes quantum-spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* ---------- not found page --------- */
+.quantum-notfound-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background-color: #F4F4F4;
+}
+
+.quantum-notfound-card {
+  background: white;
+  padding: 40px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  text-align: center;
+}
+
+.quantum-notfound-card h4 {
+  margin-bottom: 20px;
+  color: #333;
+  font-family: 'IBM Plex Mono', monospace;
+}
+
+.quantum-notfound-btn {
+  padding: 12px 24px;
+  background-color: #0062FF;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 14px;
+  transition: background-color 0.3s ease;
+}
+
+.quantum-notfound-btn:hover {
+  background-color: #0052D6;
+}
+
+/* ---------- responsiveness --------- */
+@media (max-width: 768px) {
+  .quantum-task-content {
+    padding: 0 15px 20px;
+  }
+  
+  .quantum-button-container {
+    padding: 0 15px 20px;
+    justify-content: center;
+  }
+  
+  .quantum-gate-card {
+    flex-direction: column;
+    height: auto;
+    padding: 15px;
+    gap: 10px;
+    margin: 10px auto;
+  }
+  
+  .quantum-gate-angle {
+    position: static;
+    transform: none;
+    justify-content: center;
+    width: 100%;
+    margin-top: 10px;
+  }
+  
+  .quantum-description-field {
+    max-width: 100%;
+  }
+  
+  .quantum-result-field {
+    width: 100%;
+  }
+  
+  .quantum-delete-button-container {
+    margin-left: 0;
+    margin-top: 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .quantum-task-header {
+    padding: 15px;
+  }
+  
+  .quantum-block-header {
+    font-size: 20px;
+  }
+  
+  .quantum-block-text {
+    font-size: 14px;
+  }
+  
+  .quantum-save-btn {
+    width: 100%;
+    min-width: unset;
+  }
+  
+  .quantum-delete-btn {
+    width: 140px;
+    height: 60px;
+    font-size: 13px;
+  }
+}

@@ -164,6 +164,9 @@ export interface InternalAppHandlerDTORespGatesDegrees {
   id_gate?: number;
   /** @example 1 */
   id_task?: number;
+  titile?: string;
+  TheAxis?: string;
+  Image?:string;
 }
 
 export interface InternalAppHandlerDTORespSimpleID {
@@ -185,6 +188,7 @@ export interface InternalAppHandlerDTORespTasks {
   conclusion_date?: string;
   /** @example "2023-10-01T15:04:05Z" */
   creation_date?: string;
+  formed_date?: string;
   gates_degrees?: InternalAppHandlerDTORespGatesDegrees[];
   /** @example 1 */
   id_task?: number;
@@ -197,7 +201,7 @@ export interface InternalAppHandlerDTORespTasks {
   /** @example "Quantum state calculation" */
   task_description?: string;
   /** @example "completed" */
-  task_status?: "draft" | "formed" | "completed" | "rejected";
+  task_status?: "черновик" | "сформирован" | "совершён" | "отклонён";
 }
 
 /** Ответ содержащий JWT токен и данные пользователя */
@@ -472,6 +476,7 @@ export class Api<
       >({
         path: `/api/draft/gates/${id}`,
         method: "POST",
+        secure: true,
         format: "json",
         ...params,
       }),
@@ -565,6 +570,7 @@ export class Api<
         path: `/api/gates/${id}`,
         method: "PUT",
         body: gate,
+        secure: true,
         type: ContentType.Json,
         format: "json",
         ...params,
@@ -586,6 +592,7 @@ export class Api<
         path: `/api/gates/${id}`,
         method: "DELETE",
         format: "json",
+        secure: true,
         ...params,
       }),
 
@@ -612,6 +619,7 @@ export class Api<
         path: `/api/gates/${id}/image`,
         method: "POST",
         body: data,
+        secure: true,
         type: ContentType.FormData,
         format: "json",
         ...params,
@@ -687,6 +695,7 @@ export class Api<
       this.request<InternalAppHandlerDTORespTasks, string>({
         path: `/api/quantum_tasks/${id}`,
         method: "GET",
+        secure: true, 
         type: ContentType.Json,
         format: "json",
         ...params,
@@ -711,6 +720,7 @@ export class Api<
       this.request<InternalAppHandlerDTORespTasks, string>({
         path: `/api/quantum_tasks/${id}`,
         method: "PUT",
+        secure: true, 
         body: request,
         type: ContentType.Json,
         format: "json",
@@ -734,6 +744,7 @@ export class Api<
         method: "DELETE",
         type: ContentType.Json,
         format: "json",
+        secure: true,
         ...params,
       }),
 
@@ -751,6 +762,7 @@ export class Api<
       this.request<InternalAppHandlerDTORespTasks, string>({
         path: `/api/quantum_tasks/${id}/form`,
         method: "PUT",
+        secure: true,
         type: ContentType.Json,
         format: "json",
         ...params,
@@ -777,6 +789,7 @@ export class Api<
       this.request<InternalAppHandlerDTORespTasks, string>({
         path: `/api/quantum_tasks/${id}/resolve`,
         method: "PUT",
+        secure: true,
         body: request,
         type: ContentType.Json,
         format: "json",
@@ -817,7 +830,7 @@ export class Api<
      * @summary Удалить гейт из задачи
      * @request DELETE:/api/tasks/{task_id}/services/{service_id}
      * @response `200` `InternalAppHandlerDTORespTaskServiceLink` Информация об удаленной связи
-     * @response `400` `string` Invalid IDs
+     * @response `400` `string` Invalid IфDs
      * @response `500` `string` Internal server error
      */
     tasksServicesDelete: (
@@ -828,6 +841,7 @@ export class Api<
       this.request<InternalAppHandlerDTORespTaskServiceLink, string>({
         path: `/api/tasks/${taskId}/services/${serviceId}`,
         method: "DELETE",
+        secure: true,
         type: ContentType.Json,
         format: "json",
         ...params,

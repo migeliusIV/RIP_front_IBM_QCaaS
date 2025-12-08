@@ -1,9 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { api } from '../../api';
 import type { 
-    InternalAppHandlerDTOReqUserReg, 
-    InternalAppHandlerDTORespTokenLogin,
-    InternalAppHandlerDTORespUser,
+    InternalAppHandlerDTOReqUserReg,
     InternalAppHandlerDTOReqUserUpd,
     InternalAppHandlerDTOUser
 } from '../../api/Api';
@@ -61,7 +59,7 @@ export const loginUser = createAsyncThunk(
 
 // --- 2. РЕГИСТРАЦИЯ (Register) ---
 export const registerUser = createAsyncThunk(
-    'user/register',
+    '/users',
     async (credentials: InternalAppHandlerDTOReqUserReg, { rejectWithValue }) => {
         try {
             const response = await api.users.usersCreate(credentials);
@@ -75,17 +73,32 @@ export const registerUser = createAsyncThunk(
 // --- 3. ВЫХОД (Logout) ---
 export const logoutUser = createAsyncThunk(
     'user/logout',
-    async (_, { rejectWithValue }) => {
-        try {
-            // Используем метод из api.api
-            await api.api.authLogoutCreate();
-        } catch (err: any) {
-            console.warn('Logout failed on backend, clearing local anyway');
-            return rejectWithValue(err.response?.data || 'Ошибка выхода');
-        } finally {
-            localStorage.removeItem('authToken');
-            localStorage.removeItem('userInfo');
+    async (_) => {
+        const token = localStorage.getItem('authToken');
+        
+        // Пытаемся выполнить logout на бэкенде
+        if (token) {
+            try {
+                // Создаем конфиг с заголовками
+                const config = { headers: { 'Authorization': `Bearer ${token}` } };
+                
+                // Пробуем оба варианта вызова
+                try {
+                    await (api.api.authLogoutCreate as any)(undefined, config);
+                } catch (e1) {
+                    await (api.api.authLogoutCreate as any)(config);
+                }
+            } catch (err: any) {
+                console.warn('Backend logout failed:', err.message);
+                // Не прерываем выполнение - всё равно очищаем локальные данные
+            }
         }
+        
+        // Всегда очищаем локальное хранилище
+        localStorage.removeItem('authToken');
+        localStorage.removeItem('userInfo');
+        
+        return { success: true };
     }
 );
 

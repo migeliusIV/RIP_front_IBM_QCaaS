@@ -13,7 +13,7 @@ html {
     width: 100vw;    /* 100% ширины окна */
     min-height: 100vh; /* 100% высоты окна */
     margin: 0;
-    padding: 0;
+    padding: 0 0 20px !important;
     box-sizing: border-box;
     background-image: url('http://127.0.0.1:9000/ibm-pictures/img/background_index.png'); /* Путь к изображению */
     background-repeat: no-repeat; /* Отключает повторение изображения */

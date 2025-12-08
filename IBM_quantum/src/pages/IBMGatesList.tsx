@@ -12,7 +12,7 @@ import {
 } from 'react-bootstrap';
 import { AppNavbar } from '../components/Navbar';
 import { GateCard } from '../components/GateCard';
-import { getGates/*, getDraftTaskInfo */} from '../api/gatesApi';
+import { getGates, getDraftTaskInfo } from '../api/gatesApi';
 import { useSelector, useDispatch } from 'react-redux';
 import { setSearchTerm } from '../store/slices/filterSlice';
 import type { RootState } from '../store';
@@ -24,7 +24,7 @@ import './styles/IBMGatesList.css';
 export const IBMGatesList = () => {
   const [gates, setGates] = useState<IGate[]>([]);
   const [loading, setLoading] = useState(true);
-  const [draftTask/*, setDraftTask*/] = useState<DraftTaskInfo | null>(null);
+  const [draftTask, setDraftTask] = useState<DraftTaskInfo | null>(null);
   const [error, setError] = useState<string | null>(null);
   const dispatch = useDispatch();
   const searchTerm = useSelector((state: RootState) => state.filter.searchTerm);
@@ -58,29 +58,29 @@ export const IBMGatesList = () => {
       setLoading(false);
     };
 
-    // try {
-    //   const task = await getDraftTaskInfo();
-    //   setDraftTask(task);
-    //   console.info('Проверка загрузки задачи:', task.GatesCount);
-    // } catch (err) {
-    //   console.error('Ошибка загрузки информации о задаче:', err);
-    // }
-  };
-  /*
-  const fetchDraftTask = async () => {
     try {
       const task = await getDraftTaskInfo();
       setDraftTask(task);
-      console.info('Проверка загрузки задачи:', task.GatesCount);
+      console.info('Проверка загрузки задачи:', task.services_count);
     } catch (err) {
       console.error('Ошибка загрузки информации о задаче:', err);
     }
   };
-  */
+  
+  const fetchDraftTask = async () => {
+    try {
+      const task = await getDraftTaskInfo();
+      setDraftTask(task);
+      console.info('Проверка загрузки задачи:', task);
+    } catch (err) {
+      console.error('Ошибка загрузки информации о задаче:', err);
+    }
+  };
+  
 
   useEffect(() => {
     fetchGates();
-    //fetchDraftTask();
+    fetchDraftTask();
   }, []);
 
   const handleSearchSubmit = (event: React.FormEvent) => {
@@ -136,8 +136,8 @@ export const IBMGatesList = () => {
                 
                   {/* Корзина */}
                     <div className="cart-wrapper">
-                    {draftTask?.GatesCount && draftTask.GatesCount > 0 ? (
-                        <a href={`/quantum_task/${draftTask.TaskID}`} className="d-flex align-items-center">
+                    {draftTask?.services_count && draftTask.services_count > 0 ? (
+                        <a href={`/RIP_SPA/quantum_task/${draftTask.task_id}`} className="d-flex align-items-center">
                         <Image
                             src="/RIP_SPA/basket.png"
                             alt="Корзина"
@@ -146,7 +146,7 @@ export const IBMGatesList = () => {
                         />
                         {/* Бейдж с количеством */}
                         <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                          {draftTask.GatesCount}
+                          {draftTask.services_count}
                           <span className="visually-hidden">товаров в корзине</span>
                         </span>
                         </a>

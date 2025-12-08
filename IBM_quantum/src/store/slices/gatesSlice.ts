@@ -41,12 +41,12 @@ const gatesSlice = createSlice({
     },
     updateGatesCount: (state, action: PayloadAction<number>) => {
       if (state.draftTask) {
-        state.draftTask.GatesCount = action.payload;
+        state.draftTask.services_count = action.payload;
       }
     },
     incrementGatesCount: (state) => {
       if (state.draftTask) {
-        state.draftTask.GatesCount += 1;
+        state.draftTask.services_count += 1;
       }
     }
   }

@@ -14,8 +14,8 @@ export interface IGate {
 }
 
 export interface DraftTaskInfo {
-  TaskID: number;
-  GatesCount: number;
+  task_id: number;
+  services_count: number;
 }
 
 export interface Breadcrumb {
@@ -27,3 +27,31 @@ export interface Breadcrumb {
 export interface FilterState {
     searchTerm: string;
 }
+
+// export interface DTO_Resp_Tasks {
+//     /** ID задачи */
+//     id_task: number;
+    
+//     /** Статус задачи */
+//     task_status: 'draft' | 'formed' | 'completed' | 'rejected';
+    
+//     /** Дата создания */
+//     creation_date: string; // ISO строка даты-времени
+    
+//     /** ID пользователя */
+//     id_user: number;
+    
+//     /** Дата завершения */
+//     conclusion_date: string; // ISO строка даты-времени
+    
+//     /** Описание задачи */
+//     task_description: string;
+    
+//     /** Коэффициент для |0⟩ */
+//     res_koeff_0: number;
+    
+//     /** Коэффициент для |1⟩ */
+//     res_koeff_1: number;
+//     /** Гейты с углами */
+//     gates_degrees: IGate[];
+// }

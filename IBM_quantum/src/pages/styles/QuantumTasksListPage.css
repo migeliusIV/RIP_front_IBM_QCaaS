@@ -1,0 +1,22 @@
+.table-warning-soft {
+  background-color: #fff3cd20;
+}
+.blink-icon {
+  animation: blink 2s infinite;
+}
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+.user-filter-list .list-group-item.active {
+  background-color: #e74c3c;
+  border-color: #c0392b;
+}
+
+.page-body{
+    background-color: #f4f4f4 !important;
+    min-height: 100vh;
+    min-width: 100vw;
+    padding-top: 8px !important;
+    padding-right: 30px;
+}

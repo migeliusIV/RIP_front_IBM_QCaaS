@@ -1,19 +1,36 @@
 // src/components/GateCard.tsx
-import { Card, Badge } from 'react-bootstrap';
+import { Button, Card, Badge, Spinner } from 'react-bootstrap';
+import { useDispatch, useSelector } from 'react-redux';
+import { Link } from 'react-router-dom';
+import type { AppDispatch, RootState } from '../store';
+import { addGateToDraft } from '../store/slices/taskSlice'; // ← укажите правильный путь к вашему слайсу
 import type { IGate } from '../types';
 import './styles/GateCard.css';
-import { Link } from 'react-router-dom';
 
 interface GateCardProps {
   gate: IGate;
 }
 
 export const GateCard = ({ gate }: GateCardProps) => {
+  const dispatch = useDispatch<AppDispatch>();
+
+  const { currentTask, addingGate } = useSelector((state: RootState) => ({
+    currentTask: state.task.currentTask,
+    addingGate: state.task.addingGate,
+  }));
+
+  // Проверяем, есть ли гейт уже в черновике (по id_gate)
+const isInDraft = currentTask?.gates_degrees?.some(gd => gd.id_gate === gate.ID_gate);
+
+  const handleAddToDraft = () => {
+    if (gate.ID_gate == null) return;
+    dispatch(addGateToDraft(gate.ID_gate));
+  };
+
   return (
     <Card className="gates-card h-100">
       <div className="gates-crd-cnt">
         <div className="gates-crd-txt">
-          {/* Всегда используем div.attributes для единообразия */}
           <div className="attributes">
             {gate.TheAxis !== 'non' ? (
               <>
@@ -30,7 +47,7 @@ export const GateCard = ({ gate }: GateCardProps) => {
               </Badge>
             )}
           </div>
-          
+
           <h5 className="gates-crd-ttl">{gate.Title}</h5>
           <p className="gates-crd-dscr">{gate.Description}</p>
         </div>
@@ -42,19 +59,36 @@ export const GateCard = ({ gate }: GateCardProps) => {
           />
         </div>
       </div>
-      <div className="card-buttons mt-3">
-        {/*
+
+      <div className="card-buttons mt-0">
         <Button
-          variant="dark"
+          variant={isInDraft ? 'outline-success' : 'success'}
           size="sm"
-          className="card-button-add w-100 mb-2"
-          onClick={onAddToTask}
+          className="card-button-add w-30 mb-0"
+          onClick={handleAddToDraft}
+          disabled={isInDraft || addingGate === gate.ID_gate}
         >
-          Добавить
+          {addingGate === gate.ID_gate ? (
+            <>
+              <Spinner as="span" animation="border" size="sm" className="me-1" />
+              Добавление...
+            </>
+          ) : isInDraft ? (
+            <>
+              <i className="bi bi-check-circle me-1"></i>
+              В заявке
+            </>
+          ) : (
+            <>
+              <i className="bi bi-plus-circle me-1"></i>
+              Добавить
+            </>
+          )}
         </Button>
-        */}
-        <Link to={`/gate_property/${gate.ID_gate}`}
-          className="card-button-more d-block text-center"
+ 
+        <Link
+          to={`/gate_property/${gate.ID_gate}`}
+          className="card-button-more text-center text-decoration-none"
         >
           Подробнее
         </Link>
