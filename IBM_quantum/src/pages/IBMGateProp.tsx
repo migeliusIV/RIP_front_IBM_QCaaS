@@ -64,7 +64,7 @@ export const IBMGateProp = () => {
                         <Col lg={5}>
                             <div className="prop-crd-img">
                                 <img 
-                                    src={gate.Image || 'http://127.0.0.1:9000/ibm-pictures/img/imageError.gif'} 
+                                    src={gate.Image || 'RIP_front_IBM_QCaaS/imageError.gif'} 
                                     alt={gate.Title}
                                     className="prop-crd-img img"
                                 />

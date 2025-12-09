@@ -4,7 +4,7 @@ import react from '@vitejs/plugin-react';
 
 export default defineConfig({
   plugins: [react()],
-  base: "/RIP_SPA/", 
+  base: "/RIP_front_IBM_QCaaS/", 
   server: {
     port: 5173,
     proxy: {

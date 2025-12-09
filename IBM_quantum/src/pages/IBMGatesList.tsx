@@ -139,7 +139,7 @@ export const IBMGatesList = () => {
                     {draftTask?.GatesCount && draftTask.GatesCount > 0 ? (
                         <a href={`/quantum_task/${draftTask.TaskID}`} className="d-flex align-items-center">
                         <Image
-                            src="/RIP_SPA/basket.png"
+                            src="/RIP_front_IBM_QCaaS/basket.png"
                             alt="Корзина"
                             width={60}
                             height={60}
@@ -153,7 +153,7 @@ export const IBMGatesList = () => {
                       ) : (
                         <span style={{ cursor: 'not-allowed' }} className="d-flex align-items-center">
                         <Image
-                            src="/RIP_SPA/basket.png"
+                            src="/RIP_front_IBM_QCaaS/basket.png"
                             alt="Корзина"
                             width={60}
                             height={60}
