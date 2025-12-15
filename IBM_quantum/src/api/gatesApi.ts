@@ -15,7 +15,7 @@ export const checkBackendAvailability = async (): Promise<boolean> => {
     
     try {
         // Используем GET вместо HEAD (более надёжно)
-        const response = await fetch('/health', {
+        const response = await fetch('http://localhost:8080/health', {
             method: 'GET',
             // Убираем таймаут из fetch, используем общий
             signal: AbortSignal.timeout(3000)
@@ -58,8 +58,8 @@ export const getGates = async (title?: string): Promise<IGate[]> => {
     
     try {
         const url = title
-            ? `/api/gates?title=${encodeURIComponent(title)}`
-            : '/api/gates';
+            ? `http://localhost:8080/api/gates?title=${encodeURIComponent(title)}`
+            : 'http://localhost:8080/api/gates';
         
         const res = await fetchWithTimeout(url);
         if (!res.ok) throw new Error('Ошибка загрузки гейтов');
@@ -90,7 +90,7 @@ export const getDraftTaskInfo = async (): Promise<DraftTaskInfo> => {
             throw new Error('No auth token found');
         }
 
-        const res = await fetchWithTimeout('/api/quantum_task/current',{
+        const res = await fetchWithTimeout('http://localhost:8080/api/quantum_task/current',{
             headers: {
                 'Authorization': `Bearer ${token}`
             }
@@ -115,7 +115,7 @@ export const getGateById = async (id: string): Promise<IGate> => {
     }
     
     try {
-        const response = await fetchWithTimeout(`/api/gates/${id}`);
+        const response = await fetchWithTimeout(`http://localhost:8080/api/gates/${id}`);
         if (!response.ok) throw new Error('Gate not found');
         return await response.json();
     } catch (error) {
