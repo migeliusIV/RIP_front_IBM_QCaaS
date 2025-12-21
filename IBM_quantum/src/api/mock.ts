@@ -43,6 +43,48 @@ export const MOCK_GATES: IGate[] = [
     I1j0: 0,
     I1j1: 0,
     Matrix_koeff: ''
+  },
+  {
+    ID_gate: 4,
+    Title: "H (Hadamard) Gate",
+    Description: "Создает равномерную суперпозицию из базисного состояния.",
+    FullInfo: "Операция поворачивает кубит на 90 градусов вокруг оси Y, затем на 180 градусов вокруг оси X. Это один из самых важных гейтов.",
+    Image: "/imageError.gif",
+    TheAxis: "non",
+    Status: false,
+    I0j0: 0,
+    I0j1: 0,
+    I1j0: 0,
+    I1j1: 0,
+    Matrix_koeff: ''
+  },
+  {
+    ID_gate: 5,
+    Title: "Z-axis Rotation Gate",
+    Description: "Вращает кубит вокруг оси Z на угол тэта.",
+    FullInfo: "Эта операция вращает состояние кубита на сфере Блоха вокруг оси Z. Значение угла поворота можно задать при компановке выражения (в деталях калькуляции).",
+    Image: "/imageError.gif",
+    TheAxis: "Z",
+    Status: false,
+    I0j0: 0,
+    I0j1: 0,
+    I1j0: 0,
+    I1j1: 0,
+    Matrix_koeff: ''
+  },
+  {
+    ID_gate: 6,
+    Title: "Y-axis Rotation Gate",
+    Description: "Вращает кубит вокруг оси Y на угол тэта.",
+    FullInfo: "Эта операция вращает состояние кубита на сфере Блоха вокруг оси Y. Значение угла поворота можно задать при компановке выражения (в деталях калькуляции).",
+    Image: "/imageError.gif",
+    TheAxis: "Y",
+    Status: false,
+    I0j0: 0,
+    I0j1: 0,
+    I1j0: 0,
+    I1j1: 0,
+    Matrix_koeff: ''
   }
 ];
 

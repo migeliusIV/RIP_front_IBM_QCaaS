@@ -15,6 +15,7 @@
   "dependencies": {
     "@tauri-apps/api": "^2.9.0",
     "@tauri-apps/cli": "^2.9.4",
+    "@tauri-apps/plugin-http": "^2.5.4",
     "axios": "^1.13.2",
     "bootstrap": "^5.3.8",
     "gh-pages": "^6.3.0",

@@ -1,97 +1,128 @@
-// src/api/gatesApi.ts
 import type { IGate, DraftTaskInfo } from '../types';
-import {  
-    getMockGateById, 
-    getMockGates,
-    mockDraftTask, 
+import {
+  getMockGateById,
+  getMockGates,
+  mockDraftTask,
 } from './mock';
 
-const isTauri = import.meta.env.VITE_TARGET === 'tauri';
-const BACKEND_IP = 'http://46.138.182.80:8080'; 
-const API_BASE_URL = isTauri ? `${BACKEND_IP}/api` : '/api';
+/**
+ * Runtime-проверка Tauri.
+ * НЕ на уровне модуля — важно для build.
+ */
+function isTauriRuntime(): boolean {
+  return typeof window !== 'undefined' && '__TAURI_INTERNALS__' in window;
+}
 
-// Состояние доступности бэкенда
+/**
+ * Backend URL — ЯВНО.
+ * Никаких env, чтобы исключить влияние сборки.
+ */
+const BACKEND_URL = 'http://192.168.1.66:8080';
+
+/**
+ * Принудительный флаг мок-режима.
+ * 🔥 ПОКА TRUE — ты 100% видишь моки и их обновления.
+ */
+const FORCE_MOCKS = false;
+
+/**
+ * API endpoints вычисляются ВНУТРИ функций
+ * → Vite не может ничего вырезать.
+ */
+function getApiBase(): string {
+  if (FORCE_MOCKS) return '';
+  if (isTauriRuntime()) return `${BACKEND_URL}/api`;
+  return '/api';
+}
+
+function getHealthUrl(): string {
+  if (FORCE_MOCKS) return '';
+  if (isTauriRuntime()) return `${BACKEND_URL}/health`;
+  return '/health';
+}
+
+// кеш доступности backend (используется ТОЛЬКО если FORCE_MOCKS = false)
 let isBackendAvailable: boolean | null = null;
 
-export const checkBackendAvailability = async (): Promise<boolean> => {
-    if (isBackendAvailable !== null) return isBackendAvailable;
-    
-    const healthUrl = isTauri ? `${BACKEND_IP}/health` : '/health';
-    
-    try {
-        const response = await fetch(healthUrl, {
-            method: 'GET',
-            signal: AbortSignal.timeout(3000)
-        });
-        isBackendAvailable = response.ok;
-        console.log(`Бэкенд ${isBackendAvailable ? 'доступен' : 'недоступен'}`);
-    } catch (error) {
-        console.warn('Бэкенд недоступен, используем моковые данные', error);
-        isBackendAvailable = false;
-    }
-    
-    return isBackendAvailable;
-};
+export async function checkBackendAvailability(): Promise<boolean> {
+  if (FORCE_MOCKS) return false;
 
-// Получение списка гейтов с опциональной фильтрацией по названию
-export const getGates = async (title?: string): Promise<IGate[]> => {
-    const url = title
-        ? `${API_BASE_URL}/gates?title=${encodeURIComponent(title)}`
-        : `${API_BASE_URL}/gates`;
+  if (isBackendAvailable !== null) return isBackendAvailable;
 
-    try {
-        const response = await fetch(url);
-        if (!response.ok) {
-            throw new Error('Backend is not available');
-        }
-        return await response.json();
-    } catch (error) {
-        console.warn('Failed to fetch from backend, using mock data.', error);
-        return getMockGates(title);
-    }
-};
+  try {
+    const response = await fetch(getHealthUrl(), {
+      method: 'GET',
+      signal: AbortSignal.timeout(3000),
+    });
 
-// Получение информации о черновике задачи
-export const getDraftTaskInfo = async (): Promise<DraftTaskInfo> => {
-    const url = `${API_BASE_URL}/quantum_task/current`;
+    isBackendAvailable = response.ok;
+  } catch {
+    isBackendAvailable = false;
+  }
 
-    try {
-        const token = localStorage.getItem('authToken'); 
-        if (!token) {
-            throw new Error('No auth token found');
-        }
+  return isBackendAvailable;
+}
 
-        const response = await fetch(url, {
-            headers: {
-                'Authorization': `Bearer ${token}`
-            }
-        });
+// ------------------- API -------------------
 
-        if (!response.ok) {
-            throw new Error('Failed to fetch draft task');
-        }
-        return await response.json();
-    } catch (error) {
-        console.warn('Failed to fetch draft task, using mock data.', error);
-        return mockDraftTask;
-    }
-};
+export async function getGates(title?: string): Promise<IGate[]> {
+  if (FORCE_MOCKS) {
+    return getMockGates(title);
+  }
 
-// Получение одного гейта по ID
-export const getGateById = async (id: string): Promise<IGate> => {
-    const url = `${API_BASE_URL}/gates/${id}`;
-    try {
-        const response = await fetch(url);
-        if (!response.ok) {
-            throw new Error('Backend is not available');
-        }
-        return await response.json();
-    } catch (error) {
-        console.warn(`Failed to fetch gate ${id}, using mock data.`, error);
-        const gate = getMockGateById(id);
-        if (!gate) {
-            throw new Error(`Gate with ID "${id}" not found in mocks`);
-        }
-        return gate;
-    }
-};
+  const url = title
+    ? `${getApiBase()}/gates?title=${encodeURIComponent(title)}`
+    : `${getApiBase()}/gates`;
+
+  try {
+    const response = await fetch(url);
+    if (!response.ok) throw new Error();
+    return await response.json();
+  } catch {
+    return getMockGates(title);
+  }
+}
+
+export async function getDraftTaskInfo(): Promise<DraftTaskInfo> {
+  if (FORCE_MOCKS) {
+    return mockDraftTask;
+  }
+
+  const url = `${getApiBase()}/quantum_task/current`;
+
+  try {
+    const token = localStorage.getItem('authToken');
+    if (!token) throw new Error();
+
+    const response = await fetch(url, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (!response.ok) throw new Error();
+    return await response.json();
+  } catch {
+    return mockDraftTask;
+  }
+}
+
+export async function getGateById(id: string): Promise<IGate> {
+  if (FORCE_MOCKS) {
+    const gate = getMockGateById(id);
+    if (!gate) throw new Error(`Gate "${id}" not found`);
+    return gate;
+  }
+
+  const url = `${getApiBase()}/gates/${id}`;
+
+  try {
+    const response = await fetch(url);
+    if (!response.ok) throw new Error();
+    return await response.json();
+  } catch {
+    const gate = getMockGateById(id);
+    if (!gate) throw new Error(`Gate "${id}" not found`);
+    return gate;
+  }
+}
