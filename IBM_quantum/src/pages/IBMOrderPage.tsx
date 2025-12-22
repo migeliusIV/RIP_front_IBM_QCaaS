@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { Trash, Floppy, PlayCircle } from 'react-bootstrap-icons';
@@ -20,17 +20,16 @@ import {
 import type { AppDispatch, RootState } from '../store';
 
 // Типы
-import type {
-  InternalAppHandlerDTORespTasks,
-  InternalAppHandlerDTORespGatesDegrees,
-} from '../api/Api';
+// import type {
+//   InternalAppHandlerDTORespTasks,
+//   InternalAppHandlerDTORespGatesDegrees,
+// } from '../api/Api';
 
-// Вспомогательная функция преобразования оси
-const parseAxis = (axis?: string | null): 'x' | 'y' | 'z' | null => {
-  if (!axis || axis === 'non') return null;
-  const lower = axis.toLowerCase();
-  return lower === 'x' || lower === 'y' || lower === 'z' ? lower : null;
-};
+// const parseAxis = (axis?: string | null): 'x' | 'y' | 'z' | null => {
+//   if (!axis || axis === 'non') return null;
+//   const lower = axis.toLowerCase();
+//   return lower === 'x' || lower === 'y' || lower === 'z' ? lower : null;
+// };
 
 export const DefaultGateImage = '/RIP_SPA/imageError.gif';
 
@@ -43,7 +42,9 @@ export const QuantumTaskPage = () => {
     (state: RootState) => state.task
   );
 
-  // 1. Загрузка задачи при входе
+  // ✅ Локальное состояние для углов (ключ — service_id)
+  const [localAngles, setLocalAngles] = useState<Record<number, number>>({});
+
   useEffect(() => {
     if (id) {
       dispatch(fetchTaskById(Number(id)));
@@ -54,7 +55,19 @@ export const QuantumTaskPage = () => {
     };
   }, [id, dispatch]);
 
-  // 2. После успешной операции — показываем экран успеха
+  // ✅ После загрузки задачи — инициализируем локальные углы
+  useEffect(() => {
+    if (currentTask) {
+      const angles: Record<number, number> = {};
+      currentTask.gates_degrees?.forEach(gd => {
+        if (gd.service_id != null) {
+          angles[gd.service_id] = gd.degrees ?? 0;
+        }
+      });
+      setLocalAngles(angles);
+    }
+  }, [currentTask?.id_task]);
+
   if (operationSuccess) {
     return (
       <div className="quantum-success-container">
@@ -82,9 +95,6 @@ export const QuantumTaskPage = () => {
   }
 
   const isDraft = currentTask.task_status === 'черновик';
-  const isFormed = currentTask.task_status === 'сформирован';
-  const isCompleted = currentTask.task_status === 'совершён';
-  const isRejected = currentTask.task_status === 'отклонён';
 
   const amplitude0 = (currentTask.res_koeff_0 ?? 0).toFixed(4);
   const amplitude1 = (currentTask.res_koeff_1 ?? 0).toFixed(4);
@@ -102,13 +112,20 @@ export const QuantumTaskPage = () => {
     }
   };
 
-  const handleAngleChange = (
-    serviceId: number,
-    e: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    const degrees = parseFloat(e.target.value) || 0;
+  // ✅ Только локальное обновление
+  const handleAngleInput = (serviceId: number, value: string) => {
+    const degrees = parseFloat(value) || 0;
+    setLocalAngles(prev => ({ ...prev, [serviceId]: degrees }));
+  };
+
+  // ✅ Сохранение по кнопке
+  const handleSaveAngle = (serviceId: number) => {
     if (currentTask.id_task) {
-      dispatch(updateGateAngle({ taskId: currentTask.id_task, serviceId, degrees }));
+      dispatch(updateGateAngle({
+        taskId: currentTask.id_task,
+        serviceId: serviceId,
+        degrees: localAngles[serviceId] ?? 0
+      }));
     }
   };
 
@@ -119,13 +136,13 @@ export const QuantumTaskPage = () => {
   };
 
   const handleDeleteTask = () => {
-    if (currentTask.id_task && confirm('Удалить задачу? Это действие нельзя отменить.')) {
+    if (currentTask.id_task && confirm('Удалить задачу?')) {
       dispatch(deleteTask(currentTask.id_task));
     }
   };
 
   const handleFormed = () => {
-    if (currentTask.id_task && confirm('Уверены, что хотите сформировать задачу? Это действие нельзя отменить.')) {
+    if (currentTask.id_task && confirm('Сформировать задачу?')) {
       dispatch(formedTask(currentTask.id_task));
     }
   };
@@ -144,7 +161,6 @@ export const QuantumTaskPage = () => {
       <AppNavbar />
 
       <div className="quantum-task-content">
-        {/* Описание + результат + удаление */}
         <div className="quantum-description-container">
           <div className="quantum-description-block">
             <div className="quantum-block-header">Описание</div>
@@ -156,7 +172,10 @@ export const QuantumTaskPage = () => {
               onChange={(e) =>
                 dispatch({
                   type: 'task/setCurrentTaskField',
-                  payload: { field: 'task_description', value: e.target.value },
+                  payload: {
+                    field: 'task_description',
+                    value: e.target.value,
+                  },
                 })
               }
               className="quantum-description-field"
@@ -175,16 +194,9 @@ export const QuantumTaskPage = () => {
                 className="quantum-result-field"
               />
             </div>
-            {isDraft && (
-              <button onClick={handleDeleteTask} className="quantum-delete-btn">
-                <Trash size={16} style={{ marginRight: '8px' }} />
-                Удалить задачу
-              </button>
-            )}
           </div>
         </div>
 
-        {/* Гейты */}
         <div className="quantum-gates-container">
           <div className="quantum-block-header">Укажите детали выражения</div>
           <div className="quantum-block-text">
@@ -192,20 +204,18 @@ export const QuantumTaskPage = () => {
           </div>
 
           <div className="quantum-gates-list">
-            {currentTask.gates_degrees?.map((gd: InternalAppHandlerDTORespGatesDegrees) => {
+            {currentTask.gates_degrees?.map((gd) => {
               if (gd.id_gate == null) return null;
 
-              // В реальности — можно загружать метаданные гейта (title/image/axis) через gate.id_gate
-              // Пока используем заглушку, или предположим, что бэкенд возвращает gate в ответе
               const axis = gd.TheAxis;
-              const gateTitle = `${gd.titile ?? '?'}`;
-              const degrees = gd.degrees ?? 0;
+              const gateTitle = gd.titile ?? `Gate ${gd.id_gate}`;
+              const degrees = localAngles[gd.id_gate] ?? gd.degrees ?? 0;
 
               return (
-                <div key={gd.id_gate} className="quantum-gate-card">
+                <div key={gd.service_id} className="quantum-gate-card">
                   <img
-                    src={gd.Image}
-                    alt={gd.Image}
+                    src={gd.Image || DefaultGateImage}
+                    alt={gateTitle}
                     className="quantum-gate-image"
                     width="70"
                     height="50"
@@ -218,12 +228,21 @@ export const QuantumTaskPage = () => {
                       <input
                         type="number"
                         value={degrees}
-                        onChange={(e) => handleAngleChange(gd.id_gate!, e)}
+                        onChange={(e) => handleAngleInput(gd.id_gate!, e.target.value)}
                         className="quantum-angle-input"
                         step="0.1"
                         disabled={!isDraft}
                       />
                     </div>
+                  )}
+                  {axis !== 'non' &&isDraft && (
+                    <button
+                      onClick={() => handleSaveAngle(gd.id_gate!)}
+                      className="quantum-m2m-save"
+                      title="Сохранить угол"
+                    >
+                      <Floppy size={16} />
+                    </button>
                   )}
 
                   {isDraft && (
@@ -241,7 +260,6 @@ export const QuantumTaskPage = () => {
         </div>
       </div>
 
-      {/* Кнопки управления */}
       <div className="quantum-button-container">
         {isDraft && (
           <>
@@ -252,15 +270,19 @@ export const QuantumTaskPage = () => {
               <Floppy size={14} style={{ marginRight: '4px' }} /> Сохранить описание
             </button>
             <button
-              onClick={() => handleFormed()}
+              onClick={handleFormed}
               className="quantum-save-btn quantum-save-btn-success"
             >
               <PlayCircle size={14} style={{ marginRight: '4px' }} /> Сформировать заявку
             </button>
+            <button onClick={handleDeleteTask} className="quantum-delete-btn">
+              <Trash size={14} style={{ marginRight: '8px' }} />
+              Удалить задачу
+            </button>
           </>
         )}
 
-        {isFormed && (
+        {currentTask.task_status === 'сформирован' && (
           <>
             <button
               onClick={() => handleResolve('reject')}

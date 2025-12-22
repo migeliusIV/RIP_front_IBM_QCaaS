@@ -59,5 +59,5 @@ export const getMockGates = (title?: string): IGate[] => {
 
 export const mockDraftTask: DraftTaskInfo = {
     task_id: 2,
-    services_count: 3,
+    services_count: 0,
 };

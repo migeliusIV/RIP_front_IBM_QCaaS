@@ -163,6 +163,7 @@ export interface InternalAppHandlerDTORespGatesDegrees {
   /** @example 2 */
   id_gate?: number;
   /** @example 1 */
+  service_id?: number;
   id_task?: number;
   titile?: string;
   TheAxis?: string;
@@ -816,6 +817,7 @@ export class Api<
       this.request<InternalAppHandlerDTORespUpdateDegrees, string>({
         path: `/api/tasks/${taskId}/services/${serviceId}`,
         method: "PUT",
+        secure: true,
         body: request,
         type: ContentType.Json,
         format: "json",

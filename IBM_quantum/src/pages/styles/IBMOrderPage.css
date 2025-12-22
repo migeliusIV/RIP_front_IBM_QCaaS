@@ -111,8 +111,7 @@
 }
 
 .quantum-delete-btn {
-  width: 160px;
-  height: 70px;
+  width: 200px;
   border-radius: 5px;
   color: white;
   background-color: rgba(52, 58, 63, 1);
@@ -213,6 +212,14 @@
   justify-content: right;
 }
 
+.quantum-m2m-save {
+  position: absolute;
+  right: 10px;
+  justify-content: right;
+  margin: 60px;
+  background-color: #898989;
+}
+
 /* ---------- result --------- */
 .quantum-result-container {
   width: 100%;
@@ -237,6 +244,10 @@
 }
 
 /* ---------- buttons container --------- */
+.quantum-delete-btn {
+    background-color: #898989;
+  }
+
 .quantum-button-container {
   display: flex;
   gap: 15px;
