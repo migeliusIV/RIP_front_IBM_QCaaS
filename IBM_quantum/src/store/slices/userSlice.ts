@@ -97,6 +97,7 @@ export const logoutUser = createAsyncThunk(
         // Всегда очищаем локальное хранилище
         localStorage.removeItem('authToken');
         localStorage.removeItem('userInfo');
+        sessionStorage.removeItem('wasReload');
         
         return { success: true };
     }
@@ -140,6 +141,11 @@ const userSlice = createSlice({
         },
         resetRegisterSuccess: (state) => {
             state.registerSuccess = false;
+        },
+        forceLogout: (state) => {
+            state.user = null;
+            state.token = null;
+            state.isAuthenticated = false;
         }
     },
     extraReducers: (builder) => {
@@ -210,5 +216,5 @@ const userSlice = createSlice({
     },
 });
 
-export const { clearError, resetRegisterSuccess } = userSlice.actions;
+export const { clearError, resetRegisterSuccess, forceLogout } = userSlice.actions;
 export default userSlice.reducer;

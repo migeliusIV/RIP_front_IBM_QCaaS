@@ -23,19 +23,19 @@ export interface FrontStartInternalAppDsDegreesToGates {
 export interface FrontStartInternalAppDsGate {
   /** Несущая связь */
   degrees?: FrontStartInternalAppDsDegreesToGates[];
-  description?: string;
+  description: string;
   /** subject area */
-  fullInfo?: string;
+  fullInfo: string;
   i0j0?: number;
   i0j1?: number;
   i1j0?: number;
   i1j1?: number;
-  id_gate?: number;
-  image?: string;
+  id_gate: number;
+  image: string;
   matrix_koeff?: number;
   status?: boolean;
-  theAxis?: string;
-  title?: string;
+  theAxis: string;
+  title: string;
 }
 
 export interface FrontStartInternalAppDsQuantumTask {

@@ -1,9 +1,79 @@
-import { createSlice } from "@reduxjs/toolkit";
-import type { PayloadAction } from "@reduxjs/toolkit";
-//import { useSelector } from "react-redux";
+// src/store/slices/gatesSlice.ts
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { api } from '../../api';
 import type { IGate, DraftTaskInfo } from '../../types';
-//import type { RootState } from '../index';
 
+
+// --- Thunk: загрузка списка гейтов ---
+export const fetchGatesList = createAsyncThunk<
+  IGate[],
+  { title?: string }
+>(
+  'gates/fetchList',
+  async ({ title }, { rejectWithValue }) => {
+    try {
+      const res = await api.api.gatesList({ title });
+      // Маппинг из API-модели в IGate
+      return res.data.map(g => ({
+        ID_gate: g.id_gate ?? 0,
+        Title: g.title ?? 'Без названия',
+        Description: g.description ?? '',
+        Status: g.status ?? false,
+        Image: g.image ?? null,
+        I0j0: g.i0j0 ?? 0,
+        I0j1: g.i0j1 ?? 0,
+        I1j0: g.i1j0 ?? 0,
+        I1j1: g.i1j1 ?? 0,
+        Matrix_koeff: (g.matrix_koeff ?? 1),
+        FullInfo: g.full_info ?? g.description ?? '',
+        TheAxis: g.the_axis ?? 'non',
+      }));
+    } catch (err: any) {
+      return rejectWithValue('Не удалось загрузить гейты');
+    }
+  }
+);
+
+// --- Thunk: загрузка информации о черновике ---
+export const fetchDraftTaskInfo = createAsyncThunk<
+  DraftTaskInfo,
+  void
+>(
+  'gates/fetchDraftTaskInfo',
+  async (_, { rejectWithValue }) => {
+    try {
+      const res = await api.api.quantumTaskCurrentList();
+      const data = res.data;
+      return {
+        task_id: data.task_id ?? 0,
+        services_count: data.services_count ?? 0,
+      };
+    } catch (err: any) {
+      return rejectWithValue('Не удалось получить данные черновика');
+    }
+  }
+);
+
+// --- Thunk: добавление гейта в черновик ---
+export const addGateToDraft = createAsyncThunk<
+  void,
+  number // gateId
+>(
+  'gates/addGateToDraft',
+  async (gateId, { dispatch, rejectWithValue }) => {
+    try {
+      await api.api.draftGatesCreate(gateId);
+      // Оптимистично увеличиваем счётчик
+      dispatch(incrementGatesCount());
+      // И перезагружаем информацию
+      dispatch(fetchDraftTaskInfo());
+    } catch (err: any) {
+      return rejectWithValue('Не удалось добавить гейт в задачу');
+    }
+  }
+);
+
+// --- State ---
 interface GatesState {
   data: IGate[];
   loading: boolean;
@@ -24,50 +94,60 @@ const gatesSlice = createSlice({
   name: "gates",
   initialState,
   reducers: {
-    setGates: (state, action: PayloadAction<IGate[]>) => {
+    setGates: (state, action) => {
       state.data = action.payload;
     },
-    setLoading: (state, action: PayloadAction<boolean>) => {
+    setLoading: (state, action) => {
       state.loading = action.payload;
     },
-    setError: (state, action: PayloadAction<string | null>) => {
+    setError: (state, action) => {
       state.error = action.payload;
     },
-    setDraftTask: (state, action: PayloadAction<DraftTaskInfo | null>) => {
+    setDraftTask: (state, action) => {
       state.draftTask = action.payload;
     },
-    setUseMock: (state, action: PayloadAction<boolean>) => {
+    setUseMock: (state, action) => {
       state.useMock = action.payload;
-    },
-    updateGatesCount: (state, action: PayloadAction<number>) => {
-      if (state.draftTask) {
-        state.draftTask.services_count = action.payload;
-      }
     },
     incrementGatesCount: (state) => {
       if (state.draftTask) {
         state.draftTask.services_count += 1;
       }
-    }
-  }
+    },
+  },
+  extraReducers: (builder) => {
+    // --- Список гейтов ---
+    builder
+      .addCase(fetchGatesList.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchGatesList.fulfilled, (state, action) => {
+        state.loading = false;
+        state.data = action.payload;
+      })
+      .addCase(fetchGatesList.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      })
+
+      // --- Черновик ---
+      .addCase(fetchDraftTaskInfo.fulfilled, (state, action) => {
+        state.draftTask = action.payload;
+      })
+      .addCase(fetchDraftTaskInfo.rejected, (state, action) => {
+        state.error = action.payload as string;
+      });
+  },
 });
 
-// // Хуки для доступа к состоянию
-// export const useGates = () => useSelector((state: RootState) => state.gates.data);
-// export const useGatesLoading = () => useSelector((state: RootState) => state.gates.loading);
-// export const useGatesError = () => useSelector((state: RootState) => state.gates.error);
-// export const useDraftTask = () => useSelector((state: RootState) => state.gates.draftTask);
-// export const useMockMode = () => useSelector((state: RootState) => state.gates.useMock);
-
-// Экспортируем actions
 export const {
-  setGates: setGatesAction,
-  setLoading: setLoadingAction,
-  setError: setErrorAction,
-  setDraftTask: setDraftTaskAction,
-  setUseMock: setUseMockAction,
-  updateGatesCount: updateGatesCountAction,
-  incrementGatesCount: incrementGatesCountAction
+  setGates,
+  setLoading,
+  setError,
+  setDraftTask,
+  setUseMock,
+  incrementGatesCount,
 } = gatesSlice.actions;
 
 export default gatesSlice.reducer;

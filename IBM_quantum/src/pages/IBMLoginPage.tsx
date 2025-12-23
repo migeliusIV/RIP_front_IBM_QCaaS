@@ -25,7 +25,7 @@ export const LoginPage = () => {
         e.preventDefault();
         try {
             await dispatch(loginUser(formData)).unwrap();
-            navigate('/gates');
+            navigate('/');
         } catch (err) {
             console.error('Login error:', err);
             // Ошибка уже обработана в slice, можно не делать ничего
