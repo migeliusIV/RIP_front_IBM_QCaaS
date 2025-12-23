@@ -19,17 +19,21 @@ import {
 } from '../store/slices/taskSlice';
 import type { AppDispatch, RootState } from '../store';
 
-// Типы
-// import type {
-//   InternalAppHandlerDTORespTasks,
-//   InternalAppHandlerDTORespGatesDegrees,
-// } from '../api/Api';
+// async
+const callQuantumBackend = async (taskId: number) => {
+  const resp = await fetch('http://localhost:8000/api/calculate_quantum_task/', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ id_task: taskId }),
+  });
 
-// const parseAxis = (axis?: string | null): 'x' | 'y' | 'z' | null => {
-//   if (!axis || axis === 'non') return null;
-//   const lower = axis.toLowerCase();
-//   return lower === 'x' || lower === 'y' || lower === 'z' ? lower : null;
-// };
+  if (!resp.ok) {
+    const text = await resp.text();
+    throw new Error(`Quantum backend error: ${resp.status} ${text}`);
+  }
+};
 
 export const DefaultGateImage = '/RIP_SPA/imageError.gif';
 
@@ -147,14 +151,31 @@ export const QuantumTaskPage = () => {
     }
   };
 
-  const handleResolve = (action: 'complete' | 'reject') => {
-    if (currentTask.id_task) {
-      const msg = action === 'complete' ? 'Завершить заявку?' : 'Отклонить заявку?';
-      if (confirm(msg)) {
-        dispatch(resolveTask({ id: currentTask.id_task, action }));
+  const handleResolve = async (action: 'complete' | 'reject') => {
+    if (!currentTask.id_task) return;
+
+    const msg =
+      action === 'complete'
+        ? 'Завершить заявку?'
+        : 'Отклонить заявку?';
+
+    if (!confirm(msg)) return;
+
+    try {
+      // 🔹 ТОЛЬКО ПРИ COMPLETE — дергаем Python backend
+      if (action === 'complete') {
+        await callQuantumBackend(currentTask.id_task);
       }
+
+      // 🔹 Потом стандартное завершение в Go
+      dispatch(resolveTask({ id: currentTask.id_task, action }));
+
+    } catch (err) {
+      console.error(err);
+      alert('Ошибка при запуске квантового расчёта');
     }
   };
+
 
   return (
     <div className="quantum-task-body">

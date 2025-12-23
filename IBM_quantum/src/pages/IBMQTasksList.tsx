@@ -280,7 +280,7 @@ export const QuantumTasksListPage = () => {
                           {task.task_description || '-'}
                         </td>
                         <td>
-                          {(task.res_koeff_0 ?? 0) > 0 ? (
+                          {(task.res_koeff_0 ?? 0) >= 0 ? (
                             <span className="fw-bold text-success">
                               {task.res_koeff_0?.toFixed(4)} / {task.res_koeff_1?.toFixed(4)}
                             </span>
