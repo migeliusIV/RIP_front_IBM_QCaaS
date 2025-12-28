@@ -48,7 +48,7 @@ export const QuantumTasksListPage = () => {
 
   const [selectedUserId, setSelectedUserId] = useState<number | 'all'>('all');
 
-  // ✅ Short Polling — с защитой от undefined list
+  // Short Polling — с защитой от undefined list
   useEffect(() => {
     const loadData = () => {
       try {
