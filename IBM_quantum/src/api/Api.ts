@@ -131,29 +131,29 @@ export interface InternalAppHandlerDTORespCurrTaskInfo {
 /** Полная информация о квантовом гейте */
 export interface InternalAppHandlerDTORespGate {
   /** @example "Quantum NOT gate" */
-  description?: string;
+  Description?: string;
   /** @example "Bit flip gate" */
-  full_info?: string;
+  Full_info?: string;
   /** @example 0 */
-  i0j0?: number;
+  I0j0?: number;
   /** @example 1 */
-  i0j1?: number;
+  I0j1?: number;
   /** @example 1 */
-  i1j0?: number;
+  I1j0?: number;
   /** @example 0 */
-  i1j1?: number;
+  I1j1?: number;
   /** @example 1 */
-  id_gate?: number;
+  ID_gate?: number;
   /** @example "gate_x.png" */
-  image?: string;
+  Image?: string;
   /** @example 1 */
-  matrix_koeff?: number;
+  Matrix_koeff?: number;
   /** @example true */
-  status?: boolean;
+  Status?: boolean;
   /** @example "X" */
-  the_axis?: string;
+  TheAxis?: string;
   /** @example "Pauli-X" */
-  title?: string;
+  Title?: string;
 }
 
 /** Информация о гейте в задаче с указанными углами поворота */
@@ -644,6 +644,7 @@ export class Api<
         path: `/api/quantum_task/current`,
         method: "GET",
         format: "json",
+        secure: true,
         ...params,
       }),
 

@@ -3,28 +3,18 @@ import { Button, Card, Badge, Spinner } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import type { AppDispatch, RootState } from '../store';
-import { addGateToDraft } from '../store/slices/taskSlice'; // ← укажите правильный путь к вашему слайсу
+import { addGateToDraft } from '../store/slices/gatesSlice';
 import type { IGate } from '../types';
 import './styles/GateCard.css';
 
-interface GateCardProps {
-  gate: IGate;
-}
-
-export const GateCard = ({ gate }: GateCardProps) => {
+export const GateCard = ({ gate }: { gate: IGate }) => {
   const dispatch = useDispatch<AppDispatch>();
-
-  const { currentTask, addingGate } = useSelector((state: RootState) => ({
-    currentTask: state.task.currentTask,
-    addingGate: state.task.addingGate,
-  }));
-
-  // Проверяем, есть ли гейт уже в черновике (по id_gate)
-const isInDraft = currentTask?.gates_degrees?.some(gd => gd.id_gate === gate.ID_gate);
+  const { addingGate } = useSelector((state: RootState) => ({ addingGate: state.task.addingGate }));
 
   const handleAddToDraft = () => {
-    if (gate.ID_gate == null) return;
-    dispatch(addGateToDraft(gate.ID_gate));
+    if (gate.ID_gate != null) {
+      dispatch(addGateToDraft(gate.ID_gate));
+    }
   };
 
   return (
@@ -34,20 +24,13 @@ const isInDraft = currentTask?.gates_degrees?.some(gd => gd.id_gate === gate.ID_
           <div className="attributes">
             {gate.TheAxis !== 'non' ? (
               <>
-                <Badge bg="info" className="attribute-editable">
-                  Требуется ввод данных
-                </Badge>
-                <Badge bg="secondary" className="attribute-axis">
-                  Изменение по оси {gate.TheAxis}
-                </Badge>
+                <Badge bg="info" className="attribute-editable">Требуется ввод данных</Badge>
+                <Badge bg="secondary" className="attribute-axis">Изменение по оси {gate.TheAxis}</Badge>
               </>
             ) : (
-              <Badge bg="light" text="dark" className="attribute-not-editable">
-                Не требуется ввод данных
-              </Badge>
+              <Badge bg="light" text="dark" className="attribute-not-editable">Не требуется ввод данных</Badge>
             )}
           </div>
-
           <h5 className="gates-crd-ttl">{gate.Title}</h5>
           <p className="gates-crd-dscr">{gate.Description}</p>
         </div>
@@ -62,21 +45,16 @@ const isInDraft = currentTask?.gates_degrees?.some(gd => gd.id_gate === gate.ID_
 
       <div className="card-buttons mt-0">
         <Button
-          variant={isInDraft ? 'outline-success' : 'success'}
+          variant="success"
           size="sm"
           className="card-button-add w-30 mb-0"
           onClick={handleAddToDraft}
-          disabled={isInDraft || addingGate === gate.ID_gate}
+          disabled={addingGate === gate.ID_gate}
         >
           {addingGate === gate.ID_gate ? (
             <>
               <Spinner as="span" animation="border" size="sm" className="me-1" />
               Добавление...
-            </>
-          ) : isInDraft ? (
-            <>
-              <i className="bi bi-check-circle me-1"></i>
-              В заявке
             </>
           ) : (
             <>
@@ -86,10 +64,7 @@ const isInDraft = currentTask?.gates_degrees?.some(gd => gd.id_gate === gate.ID_
           )}
         </Button>
  
-        <Link
-          to={`/gate_property/${gate.ID_gate}`}
-          className="card-button-more text-center text-decoration-none"
-        >
+        <Link to={`/gate_property/${gate.ID_gate}`} className="card-button-more text-center text-decoration-none">
           Подробнее
         </Link>
       </div>
